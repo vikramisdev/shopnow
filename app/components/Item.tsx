@@ -10,7 +10,7 @@ export default function Item({ image, title, price }: ItemProps) {
   return (
     <div className="w-fit overflow-clip flex flex-col bg-slate-100 m-5 rounded-md">
       <div className="p-14 h-72 flex items-center">
-      <Image className="hover:scale-105 mix-blend-multiply" alt="product image" width={400} height={600} src={image} />
+      <Image className="hover:scale-105 mix-blend-multiply cursor-pointer" alt="product image" width={400} height={600} src={image} />
       </div>
       <div className="py-8 px-5">
         <h2 className="text-lg font-bold mt-2">{title}</h2>
