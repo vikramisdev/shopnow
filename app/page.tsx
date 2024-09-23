@@ -4,7 +4,6 @@ import CategoryTiles from "./components/CategoryTiles";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Item from "./components/Item";
-import { useUser } from "@clerk/nextjs";
 
 export interface DefaultProps {
   isSignedIn: unknown
