@@ -10,7 +10,7 @@ export default function Header() {
       <h1 className="font-bold text-xl">ShopNow</h1>
       <ul className="flex gap-10 items-center">
         <input
-          className="py-2 px-4 rounded-3xl focus:outline-none"
+          className="py-2 px-4 rounded-3xl focus:outline-none w-80"
           type="text"
           placeholder="Search..."
         />
@@ -20,8 +20,8 @@ export default function Header() {
         <Link href={"/about"} className="cursor-pointer hover:bg-black hover:text-white py-2 px-3 rounded">
           About
         </Link>
-        <Link href={"/contact"} className="cursor-pointer hover:bg-black hover:text-white py-2 px-3 rounded">
-          Contact
+        <Link href={"/cart"} className="cursor-pointer hover:bg-black hover:text-white py-2 px-3 rounded">
+          Cart
         </Link>
 
         {/* Render UserButton when signed in, otherwise show SignInButton */}
