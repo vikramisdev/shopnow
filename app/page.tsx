@@ -1,5 +1,6 @@
 "use client";
 
+import Banner from "./components/Banner";
 import CategoryTiles from "./components/CategoryTiles";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -13,9 +14,10 @@ export default function Home() {
 
   return (
     <div>
-      <Header />
+      <Header searchBarFocus={false} />
       <CategoryTiles />
-      <div className="flex justify-between">
+      <Banner />
+      <div className="grid grid-cols-4">
         <Item
           image="/images/item1.webp"
           title="HONOR MagicBook X16 Pro 2024,"
