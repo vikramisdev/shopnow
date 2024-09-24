@@ -1,7 +1,7 @@
 export default function cart() {
     return(
         <div>
-            <h3>cart Section</h3>
+            <h3>contact Section</h3>
         </div>
     );
 }

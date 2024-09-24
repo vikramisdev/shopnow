@@ -1,5 +1,6 @@
 "use client"
 
+import Footer from "../components/Footer";
 import Header from "../components/Header";
 
 export default function about() {
@@ -50,6 +51,7 @@ export default function about() {
         </p>
         <p className="mt-5 font-semibold italic">Thank You</p>
       </div>
+      <Footer />
     </div>
   );
 }
