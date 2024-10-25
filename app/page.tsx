@@ -5,40 +5,40 @@ import CategoryTiles from "./components/CategoryTiles";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Item from "./components/Item";
+import HeroSection from "./components/HeroSection";
+import { useEffect, useState } from "react";
+import { ClerkLoading } from "@clerk/nextjs";
 
 export interface DefaultProps {
-  isSignedIn: unknown
+  isSignedIn: unknown;
 }
 
 export default function Home() {
+  const [result, setResult] = useState(null);
+
+  useEffect(() => {
+    fetch("https://dummyjson.com/products/category/smartphones")
+      .then((res) => res.json())
+      .then((res) => setResult(res));
+  }, []);
 
   return (
     <div>
       <Header searchBarFocus={false} />
-      <CategoryTiles />
+      <HeroSection />
       <Banner />
+
       <div className="grid grid-cols-4">
-        <Item
-          image="/images/item1.webp"
-          title="HONOR MagicBook X16 Pro 2024,"
-          price="₹53,990 M.R.P: ₹84,999 (36% off)"
-        />
-        <Item
-          image="/images/item2.webp"
-          title="Lenovo IdeaPad Slim 5 12th Gen,"
-          price="₹58,990 M.R.P: ₹78,999 (25% off)"
-        />
-        <Item
-          image="/images/item3.webp"
-          title="Acer Aspire 3 Laptop Intel Core,"
-          price="₹21,719 M.R.P: ₹33,999 (36% off)"
-        />
-        <Item
-          image="/images/item3.webp"
-          title="Acer Aspire 3 Laptop Intel Core,"
-          price="₹21,719 M.R.P: ₹33,999 (36% off)"
-        />
+        {result? result?.products?.map((element) => (
+          <Item
+            key={element.id}
+            image={element.images[2]}
+            title={element.title}
+            price={element.price}
+          />
+        )) : <h1 className="text-center w-screen py-32 text-4xl font-bold">Loading Items </h1>}
       </div>
+
       <Footer />
     </div>
   );
