@@ -7,13 +7,13 @@ import Footer from "../components/Footer";
 export default function Cart() {
   const { isSignedIn } = useUser();
 
-  return isSignedIn ? (
-    <div>
+  return (
+    isSignedIn?
+    <div className="bg-[url('/images/favorite.svg')] bg-cover">
       <Header searchBarFocus={false} />
-      <div className="flex justify-center items-center h-screen bg-[url('/images/cart.svg')] bg-no-repeat bg-top bg-cover"></div>
+      <div className="flex justify-center items-center h-screen">
+      </div>
       <Footer />
-    </div>
-  ) : (
-    <SignIn routing="hash" />
+    </div> : <SignIn routing="hash" />
   );
 }

@@ -2,8 +2,8 @@ import Image from "next/image";
 
 export default function Banner() {
   return (
-    <div className="m-5 overflow-hidden">
-      <div className="flex animate-slide">
+    <div className="my-5 overflow-hidden">
+      <div className="flex animate-slide z-0">
         <Image
           className="w-screen"
           src={"/images/banner1.webp"}

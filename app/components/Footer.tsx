@@ -16,7 +16,7 @@ export default function Footer() {
           <Link className="text-slate-200" href={"/about"}>
             About Us
           </Link>
-          <Link className="text-slate-200" href={"/about"}>
+          <Link className="text-slate-200" href={"/contact"}>
             Contact Us
           </Link>
         </div>

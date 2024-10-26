@@ -7,7 +7,7 @@ export default function about() {
   return (
     <div>
       <Header searchBarFocus={false} />
-      <div className="m-10 rounded-lg bg-stone-50 p-10">
+      <div className="rounded-lg bg-stone-50 p-10">
         <h1 className="text-2xl  font-bold">About Us</h1>
         <p className="mt-5">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti

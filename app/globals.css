@@ -24,3 +24,11 @@
 .animate-slide {
   animation: slide 8s infinite ease-out;
 }
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
