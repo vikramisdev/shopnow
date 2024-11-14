@@ -5,7 +5,6 @@ import { SignIn, useUser } from "@clerk/nextjs";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useEffect, useState } from "react";
-import ProductPreview from "../components/ProductPreview";
 import Bill from "../components/Bill";
 
 interface ProductData {

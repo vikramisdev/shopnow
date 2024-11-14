@@ -33,7 +33,7 @@ export default function Cart() {
     } catch (e) {
       console.log(e);
     }
-  }, []);
+  });
 
   return isSignedIn ? (
     <div>
