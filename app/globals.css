@@ -32,3 +32,12 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+.circular-progress {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, white 82%, transparent 80% 100%),
+    conic-gradient(black 75%, white 0);
+}

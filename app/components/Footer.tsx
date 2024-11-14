@@ -4,24 +4,118 @@ import {
   InstagramLogoIcon,
   TwitterLogoIcon,
 } from "@radix-ui/react-icons";
+import Logo from "./Logo";
 
 export default function Footer() {
   return (
-    <div className="h-96 bg-gray-950 mt-10 text-white py-14 px-20">
-      <div className="">
-        <h2 className="font-semibold">
-          © 2023-2024, shopnow.com, Inc. or its affiliates
-        </h2>
-        <div className="flex flex-col mt-10">
-          <Link className="text-slate-200" href={"/about"}>
-            About Us
-          </Link>
-          <Link className="text-slate-200" href={"/contact"}>
-            Contact Us
-          </Link>
+    <div className="bg-gray-950 mt-10 text-white py-14 px-12">
+      <div className="md:flex justify-between py-12">
+        {/* Logo */}
+        <div>
+          <div className="flex flex-col">
+            <Logo />
+          </div>
         </div>
 
-        <div className="pt-5 flex gap-6">
+        {/* company */}
+        <div>
+          <h1 className="md:text-xl md:mb-12 font-semibold">Company</h1>
+          <div className="flex flex-col gap-y-6">
+            <Link className="font-normal" href={"/"}>
+              Projects
+            </Link>
+            <Link className="font-normal" href={"/"}>
+              Blog
+            </Link>
+            <Link className="font-normal" href={"/"}>
+              Projects
+            </Link>
+            <Link className="font-normal" href={"/"}>
+              Projects
+            </Link>
+          </div>
+        </div>
+
+        {/* about */}
+        <div>
+          <h1 className="md:text-xl md:mb-12 font-semibold">About</h1>
+          <div className="flex flex-col gap-y-6">
+            <Link className="font-normal" href={"/"}>
+              ShopNow, Inc.
+            </Link>
+            <Link className="font-normal" href={"/"}>
+              Policies
+            </Link>
+            <Link className="font-normal" href={"/"}>
+              Investors
+            </Link>
+            <Link className="font-normal" href={"/"}>
+              Careers
+            </Link>
+            <Link className="font-normal" href={"/"}>
+              Press
+            </Link>
+          </div>
+        </div>
+
+        {/* shop */}
+        <div>
+          <h1 className="md:text-xl md:mb-12 font-semibold">Shop</h1>
+          <div className="flex flex-col gap-y-6">
+            <Link className="font-normal" href={"/"}>
+              Gift Cards
+            </Link>
+            <Link className="font-normal" href={"/"}>
+              Blog
+            </Link>
+            <Link className="font-normal" href={"/"}>
+              Projects
+            </Link>
+            <Link className="font-normal" href={"/"}>
+              Projects
+            </Link>
+          </div>
+        </div>
+
+        {/* sell */}
+        <div>
+          <h1 className="md:text-xl md:mb-12 font-semibold">Sell</h1>
+          <div className="flex flex-col gap-y-6">
+            <Link className="font-normal" href={"/"}>
+              Sell on ShopNow
+            </Link>
+            <Link className="font-normal" href={"/"}>
+              Teams
+            </Link>
+            <Link className="font-normal" href={"/"}>
+              Forums
+            </Link>
+            <Link className="font-normal" href={"/"}>
+              Affiliates & Creators
+            </Link>
+          </div>
+        </div>
+
+        {/* Help */}
+        <div>
+          <h1 className="md:text-xl md:mb-12 font-semibold">Help</h1>
+          <div className="flex flex-col gap-y-6">
+            <Link className="font-normal" href={"/"}>
+              Help Center
+            </Link>
+            <Link className="font-normal" href={"/"}>
+              Privacy Settings
+            </Link>
+          </div>
+        </div>
+      </div>
+      <hr className="opacity-30"></hr>
+      <div className="flex items-center justify-between py-6">
+        <h2 className="font-semibold">
+          © 2023-2024 ShopNow, All Rights Reserved
+        </h2>
+
+        <div className="flex gap-6">
           <InstagramLogoIcon className="cursor-pointer h-5 w-5" />
           <TwitterLogoIcon className="cursor-pointer h-5 w-5" />
           <GitHubLogoIcon className="cursor-pointer h-5 w-5" />

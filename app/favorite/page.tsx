@@ -9,8 +9,8 @@ export default function Cart() {
 
   return (
     isSignedIn?
-    <div className="bg-[url('/images/favorite.svg')] bg-cover">
-      <Header searchBarFocus={false} />
+    <div className="">
+      <Header />
       <div className="flex justify-center items-center h-screen">
       </div>
       <Footer />

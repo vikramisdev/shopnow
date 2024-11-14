@@ -6,13 +6,14 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useEffect, useState } from "react";
 import ProductPreview from "../components/ProductPreview";
+import Bill from "../components/Bill";
 
 interface ProductData {
   id: number;
   title: string;
   description: string;
   thumbnail: string;
-  images: Array<string>
+  images: Array<string>;
   price: string;
   category: string;
   rating: number;
@@ -38,28 +39,24 @@ export default function Cart() {
   return isSignedIn ? (
     <div>
       <Header />
-      <div className="md:px-12 px-6 pt-24 ">
-      {result.map((element) =>
-        String(element.id) == productId ? (
-          <ProductPreview
-            key={element.id}
-            id={element.id}
-            title={element.title}
-            description={element.description}
-            price={element.price}
-            thumbnail={element.images[0]}
-            rating={element.rating}
-            brand={element.brand}
-            category={element.category}
-          />
-        ) : (
-          <span key={element.id}></span>
-        )
-      )}
+      <div className="md:px-12 pt-24">
+        {result.map((element) =>
+          String(element.id) == productId ? (
+            <Bill
+              key={element.id}
+              title={element.title}
+              images={element.images}
+              price={element.price}
+              description={element.description}
+            />
+          ) : (
+            <span key={element.id}></span>
+          )
+        )}
       </div>
 
       {params.get("id") ? null : (
-        <div className="flex justify-center items-center h-screen bg-[url('/images/cart.svg')] bg-no-repeat bg-top bg-contain md:bg-cover"></div>
+        <div className="flex justify-center items-center h-screen bg-[url('/images/cart.svg')] bg-no-repeat bg-top bg-cover"></div>
       )}
       <Footer />
     </div>
