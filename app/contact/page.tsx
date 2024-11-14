@@ -6,7 +6,7 @@ import Header from "../components/Header";
 export default function contact() {
   return (
     <div>
-      <Header searchBarFocus={false} />
+      <Header />
       <div className="rounded-lg bg-stone-50 p-10">
         <h1 className="text-2xl  font-bold">Contact Us</h1>
         <p className="mt-5">
