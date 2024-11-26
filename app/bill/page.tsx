@@ -39,7 +39,7 @@ export default function Cart() {
     <div>
       <Header />
       <div className="md:px-12 pt-24">
-        {result.map((element) =>
+        {result?.map((element) =>
           String(element.id) == productId ? (
             <Bill
               key={element.id}

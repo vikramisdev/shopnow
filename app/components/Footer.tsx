@@ -9,7 +9,7 @@ import Logo from "./Logo";
 export default function Footer() {
   return (
     <div className="bg-gray-950 mt-10 text-white py-14 px-12">
-      <div className="md:flex justify-between py-12">
+      <div className="flex flex-col md:flex-row md:justify-between py-12 gap-y-12">
         {/* Logo */}
         <div>
           <div className="flex flex-col">
@@ -19,7 +19,7 @@ export default function Footer() {
 
         {/* company */}
         <div>
-          <h1 className="md:text-xl md:mb-12 font-semibold">Company</h1>
+          <h1 className="md:text-xl md:mb-12 mb-6 font-semibold">Company</h1>
           <div className="flex flex-col gap-y-6">
             <Link className="font-normal" href={"/"}>
               Projects
@@ -27,20 +27,14 @@ export default function Footer() {
             <Link className="font-normal" href={"/"}>
               Blog
             </Link>
-            <Link className="font-normal" href={"/"}>
-              Projects
-            </Link>
-            <Link className="font-normal" href={"/"}>
-              Projects
-            </Link>
           </div>
         </div>
 
         {/* about */}
         <div>
-          <h1 className="md:text-xl md:mb-12 font-semibold">About</h1>
+          <h1 className="md:text-xl md:mb-12 mb-6 font-semibold">About</h1>
           <div className="flex flex-col gap-y-6">
-            <Link className="font-normal" href={"/"}>
+            <Link className="font-normal" href={"/about"}>
               ShopNow, Inc.
             </Link>
             <Link className="font-normal" href={"/"}>
@@ -52,15 +46,12 @@ export default function Footer() {
             <Link className="font-normal" href={"/"}>
               Careers
             </Link>
-            <Link className="font-normal" href={"/"}>
-              Press
-            </Link>
           </div>
         </div>
 
         {/* shop */}
         <div>
-          <h1 className="md:text-xl md:mb-12 font-semibold">Shop</h1>
+          <h1 className="md:text-xl md:mb-12 mb-6 font-semibold">Shop</h1>
           <div className="flex flex-col gap-y-6">
             <Link className="font-normal" href={"/"}>
               Gift Cards
@@ -79,7 +70,7 @@ export default function Footer() {
 
         {/* sell */}
         <div>
-          <h1 className="md:text-xl md:mb-12 font-semibold">Sell</h1>
+          <h1 className="md:text-xl md:mb-12 mb-6 font-semibold">Sell</h1>
           <div className="flex flex-col gap-y-6">
             <Link className="font-normal" href={"/"}>
               Sell on ShopNow
@@ -98,7 +89,7 @@ export default function Footer() {
 
         {/* Help */}
         <div>
-          <h1 className="md:text-xl md:mb-12 font-semibold">Help</h1>
+          <h1 className="md:text-xl md:mb-12 mb-6 font-semibold">Help</h1>
           <div className="flex flex-col gap-y-6">
             <Link className="font-normal" href={"/"}>
               Help Center

@@ -9,6 +9,7 @@ interface ProductData {
   thumbnail: string;
   price: string;
   category: string;
+
 }
 
 const Featured: React.FC = ({}) => {
@@ -16,14 +17,10 @@ const Featured: React.FC = ({}) => {
   const [result, setResult] = useState<ProductData[]>([]);
 
   useEffect(() => {
-    try {
-      fetch("https://dummyjson.com/products/category/mens-shirts?limit=4")
+    fetch("https://dummyjson.com/products/category/mens-shirts?limit=4")
       .then((res) => res.json())
-      .then((data) => setResult(data.products));
-    } catch(e) {
-     console.log(e);
-    }
-
+      .then((data) => setResult(data.products))
+      .catch(() => {});
   }, []);
 
   return result.length != 0 ? (
@@ -33,7 +30,9 @@ const Featured: React.FC = ({}) => {
         {result.map((element) => (
           <Product
             onClick={() => {
-              router.push("/cart?category=" + element.category + "&" + "id=" + element.id)
+              router.push(
+                "/cart?category=" + element.category + "&" + "id=" + element.id
+              );
             }}
             id={String(element.id)}
             key={element.id}

@@ -18,7 +18,8 @@ const NewCollection: React.FC = ({}) => {
   useEffect(() => {
     fetch("https://dummyjson.com/products/category/mens-shoes")
       .then((res) => res.json())
-      .then((data) => setResult(data.products));
+      .then((data) => setResult(data.products))
+      .catch(() => {});
   }, []);
 
   return result.length != 0 ? (

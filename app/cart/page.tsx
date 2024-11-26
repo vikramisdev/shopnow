@@ -12,7 +12,7 @@ interface ProductData {
   title: string;
   description: string;
   thumbnail: string;
-  images: Array<string>
+  images: Array<string>;
   price: string;
   category: string;
   rating: number;
@@ -26,36 +26,33 @@ export default function Cart() {
   const productId = params.get("id");
 
   useEffect(() => {
-    try {
-      fetch(`https://dummyjson.com/products/category/${params.get("category")}`)
-        .then((res) => res.json())
-        .then((data) => setResult(data.products));
-    } catch (e) {
-      console.log(e);
-    }
+    fetch(`https://dummyjson.com/products/category/${params.get("category")}`)
+      .then((res) => res.json())
+      .then((data) => setResult(data.products))
+      .catch(() => {});
   });
 
   return isSignedIn ? (
     <div>
       <Header />
       <div className="md:px-12 px-6 pt-24 ">
-      {result.map((element) =>
-        String(element.id) == productId ? (
-          <ProductPreview
-            key={element.id}
-            id={element.id}
-            title={element.title}
-            description={element.description}
-            price={element.price}
-            thumbnail={element.images[0]}
-            rating={element.rating}
-            brand={element.brand}
-            category={element.category}
-          />
-        ) : (
-          <span key={element.id}></span>
-        )
-      )}
+        {result.map((element) =>
+          String(element.id) == productId ? (
+            <ProductPreview
+              key={element.id}
+              id={element.id}
+              title={element.title}
+              description={element.description}
+              price={element.price}
+              thumbnail={element.images[0]}
+              rating={element.rating}
+              brand={element.brand}
+              category={element.category}
+            />
+          ) : (
+            <span key={element.id}></span>
+          )
+        )}
       </div>
 
       {params.get("id") ? null : (
