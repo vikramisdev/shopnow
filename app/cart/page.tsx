@@ -33,34 +33,36 @@ export default function Cart() {
   });
 
   return isSignedIn ? (
-    <div>
-      <Header />
-      <div className="md:px-12 px-6 pt-24 ">
-        {result.map((element) =>
-          String(element.id) == productId ? (
-            <ProductPreview
-              key={element.id}
-              id={element.id}
-              title={element.title}
-              description={element.description}
-              price={element.price}
-              thumbnail={element.images[0]}
-              rating={element.rating}
-              brand={element.brand}
-              category={element.category}
-            />
-          ) : (
-            <span key={element.id}></span>
-          )
-        )}
-      </div>
+		<div>
+			<Header />
+			<div className="md:px-12 px-6 pt-24 ">
+				{result.map((element) =>
+					String(element.id) == productId ? (
+						<ProductPreview
+							key={element.id}
+							id={element.id}
+							title={element.title}
+							description={element.description}
+							price={element.price}
+							thumbnail={element.images[0]}
+							rating={element.rating}
+							brand={element.brand}
+							category={element.category}
+						/>
+					) : (
+						<span key={element.id}></span>
+					)
+				)}
+			</div>
 
-      {params.get("id") ? null : (
-        <div className="flex justify-center items-center h-screen bg-[url('/images/cart.svg')] bg-no-repeat bg-top bg-contain md:bg-cover"></div>
-      )}
-      <Footer />
-    </div>
+			{params.get("id") ? null : (
+				<div className="flex justify-center items-center h-screen bg-[url('/images/cart.svg')] bg-no-repeat bg-top bg-contain md:bg-cover"></div>
+			)}
+			<Footer />
+		</div>
   ) : (
-    <SignIn routing="hash" />
+		<div className="h-screen w-full flex justify-center items-center">
+			<SignIn routing="hash" />
+		</div>
   );
 }

@@ -16,7 +16,6 @@ export default function Cart() {
   ) : (
     <div className="flex h-screen justify-center items-center">
       <SignIn routing="hash" />
-      <h1>Please Sign In to View Favourite Page.</h1>
     </div>
   );
 }

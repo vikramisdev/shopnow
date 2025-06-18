@@ -41,3 +41,21 @@
     radial-gradient(closest-side, white 82%, transparent 80% 100%),
     conic-gradient(black 75%, white 0);
 }
+
+/* scrollbar styles */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  /* border-radius: 20px; */
+  background-color: black;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: peru;
+}

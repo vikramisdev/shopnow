@@ -23,27 +23,31 @@ const NewCollection: React.FC = ({}) => {
   }, []);
 
   return result.length != 0 ? (
-    <div className="px-10 py-24">
-      <h1 className="font-semibold text-3xl py-5 px-2">New Collection</h1>{" "}
-      <div className="flex justify-between flex-wrap gap-y-12">
-        {result.map((element) => (
-          <Product
-            onClick={() => {
-              router.push(
-                "/cart?category=" + element.category + "&" + "id=" + element.id
-              );
-            }}
-            id={String(element.id)}
-            key={element.id}
-            title={element.title}
-            thumbnail={element.thumbnail}
-            price={element.price}
-            description={element.description}
-            category={element.category}
-          />
-        ))}
-      </div>
-    </div>
+		<div className="px-10 py-24">
+			<h1 className="font-semibold text-3xl py-5 px-2">New Collection</h1>{" "}
+			<div className="flex justify-between flex-wrap gap-y-12 gap-x-6">
+				{result.map((element) => (
+					<Product
+						onClick={() => {
+							router.push(
+								"/cart?category=" +
+									element.category +
+									"&" +
+									"id=" +
+									element.id
+							);
+						}}
+						id={String(element.id)}
+						key={element.id}
+						title={element.title}
+						thumbnail={element.thumbnail}
+						price={element.price}
+						description={element.description}
+						category={element.category}
+					/>
+				))}
+			</div>
+		</div>
   ) : null;
 };
 

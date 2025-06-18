@@ -4,7 +4,7 @@ import React from "react";
 
 function HeroSection() {
   const scrollDown = () => {
-    const heroSection = document.getElementById("hero-section");
+    const heroSection = document.getElementById("sale-section");
     window.scroll({
       top: heroSection?.clientHeight,
       left: 0,
