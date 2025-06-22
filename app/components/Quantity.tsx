@@ -1,35 +1,32 @@
 import { Minus, Plus } from "lucide-react";
-import React, { useState } from "react";
+import React from "react";
 
 interface QuantityProps {
-  itemCount?: number;
-  title?: string;
+	itemCount: number;
+	setItemCount: (count: number) => void;
+	title?: string;
 }
 
-function Quantity({ itemCount = 1, title = "Qty" }: QuantityProps) {
-  const [itemCount2, setItemCount2] = useState(itemCount);
+function Quantity({ itemCount, setItemCount, title = "Qty" }: QuantityProps) {
+	const decrement = () => {
+		if (itemCount > 1) {
+			setItemCount(itemCount - 1);
+		}
+	};
 
-  const decrement = (count: number) => {
-    setItemCount2(count > 1 ? count - 1 : count);
-  }
+	const increment = () => {
+		setItemCount(itemCount + 1);
+	};
 
-  return (
-    <div className="flex gap-x-3 border-[0px] border-gray-500 w-fit px-2 py-1 my-4">
-      <Minus
-        onDoubleClick={() => {}}
-        onClick={() => decrement(itemCount2)}
-        className="cursor-pointer"
-      />
-      <h1 className="select-none">
-        {title} {itemCount2 > 0 ? itemCount2 : 1}
-      </h1>
-      <Plus
-        onDoubleClick={() => {}}
-        onClick={() => setItemCount2(itemCount2 + 1)}
-        className="cursor-pointer"
-      />
-    </div>
-  );
+	return (
+		<div className="flex items-center gap-x-3 border border-gray-300 rounded px-3 py-1 my-4 w-fit bg-white">
+			<Minus onClick={decrement} className="cursor-pointer" />
+			<h1 className="select-none text-base font-medium">
+				{title} {itemCount}
+			</h1>
+			<Plus onClick={increment} className="cursor-pointer" />
+		</div>
+	);
 }
 
 export default Quantity;

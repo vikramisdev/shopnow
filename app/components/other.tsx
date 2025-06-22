@@ -1,8 +1,7 @@
 enum PaymentMethods {
-  creditCard,
-  upi,
-  cashOnDelivery,
+	creditCard = "creditCard",
+	upi = "upi",
+	cashOnDelivery = "cashOnDelivery",
 }
 
-
-export default PaymentMethods
+export default PaymentMethods;

@@ -1,69 +1,173 @@
-import { ArrowRight, CheckSquare, Heart, ShoppingBagIcon } from "lucide-react";
-import Button from "./Button";
+"use client";
+
 import { useRouter } from "next/navigation";
-import { MouseEvent, useState } from "react";
+import {
+	ArrowRight,
+	CheckSquare,
+	Heart,
+	Loader2,
+	ShoppingBagIcon,
+} from "lucide-react";
+import { MouseEvent, useEffect, useState } from "react";
+import { toast } from "sonner";
+import Button from "./Button";
 
 interface ItemProps {
-  id: string;
-  thumbnail: string;
-  title: string;
-  description: string;
-  price: string;
-  category: string;
-  onClick?: () => void;
+	id: string;
+	thumbnail: string;
+	title: string;
+	description: string;
+	price: number;
+	category: string;
+	onClick?: () => void;
+	isInCart?: boolean;
+	isFavorite?: boolean;
 }
 
 export default function Product(props: ItemProps) {
-  const router = useRouter();
-  const [inCart, AddToCart] = useState(false);
+	const router = useRouter();
+	const [inCart, setInCart] = useState(false);
+	const [favorite, setFavorite] = useState(false);
+	const [cartLoading, setCartLoading] = useState(false);
+	const [favoriteLoading, setFavoriteLoading] = useState(false);
 
-  function redirectTo(event: MouseEvent<HTMLDivElement, globalThis.MouseEvent>, url: string) {
-    event.stopPropagation();
-    router.push(url);
-  }
+	useEffect(() => {
+		setInCart(props.isInCart ?? false);
+		setFavorite(props.isFavorite ?? false);
+	}, [props.isInCart, props.isFavorite]);
 
-  function addTocart(event: MouseEvent<SVGSVGElement, globalThis.MouseEvent>) {
-    event.stopPropagation();
-    AddToCart(!inCart);
-  }
+	const handleBuyNow = (e: MouseEvent) => {
+		e.stopPropagation();
+		router.push(`/bill?category=${props.category}&id=${props.id}`);
+	};
 
-  return (
-    <div className="p-2 w-72 flex flex-col rounded-2xl gap-y-3 shadow-lg">
-      <div
-        onClick={props.onClick}
-        className="cursor-pointer hover:-translate-y-2 overflow-hidden duration-300 flex flex-col justify-between h-96 bg-cover bg-center rounded-2xl p-4 bg-slate-100"
-        style={{ backgroundImage: `url(${props.thumbnail})` }}
-      >
-        <div className="w-full flex justify-end mb-auto">
-          <Button>
-            <Heart className="" />
-          </Button>
-        </div>
+	const toggleCart = async (e: MouseEvent) => {
+		e.stopPropagation();
+		setCartLoading(true);
 
-        <div className="flex items-center justify-between gap-x-2 mt-auto w-full">
-          <div onClick={(event) => redirectTo(event, `/bill?category=${props.category}&id=${props.id}`)} className="group flex items-center gap-2 h-10 bg-black bg-opacity-40 w-fit px-2 py-2 rounded-full cursor-pointer">
-            <h1 className="text-white text-sm">Buy Now</h1>
-            <ArrowRight className="rounded-full bg-white h-6 w-6 group-hover:rotate-90 duration-500 p-1" />
-          </div>
-          <Button onClick={() => {}}>
-            <ShoppingBagIcon className={`${inCart? "hidden" : "visible"}`} onClick={(event) => addTocart(event)} />
-            <CheckSquare className={`${!inCart? "hidden" : "visible"}`} onClick={(event) => addTocart(event)} />
-          </Button>
-          <h1 className="bg-black text-white px-3 py-2 w-fit rounded-full h-10">
-            ${props.price}
-          </h1>
-        </div>
-      </div>
-      <div className="flex justify-between px-4 py-3 bg-gray-200 rounded-2xl h-20 text-nowrap">
-        <div className="flex-1 overflow-hidden">
-          <h1 className="font-semibold text-lg text-ellipsis overflow-hidden">
-            {props.title}
-          </h1>
-          <p className="font-normal text-sm text-ellipsis overflow-hidden">
-            {props.description}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
+		try {
+			const res = await fetch("/api/cart", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					productId: Number(props.id),
+					title: props.title,
+					price: props.price,
+					thumbnail: props.thumbnail,
+					category: props.category,
+				}),
+			});
+
+			if (res.ok) {
+				const { message } = await res.json();
+				setInCart((prev) => !prev);
+				toast.success(message);
+			} else {
+				toast.error("Cart action failed");
+			}
+		} catch (err) {
+			toast.error(`Something went wrong ${err}`);
+		} finally {
+			setCartLoading(false);
+		}
+	};
+
+	const toggleFavorite = async (e: MouseEvent) => {
+		e.stopPropagation();
+		setFavoriteLoading(true);
+
+		try {
+			const res = await fetch("/api/favorite", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					productId: Number(props.id),
+					title: props.title,
+					price: props.price,
+					thumbnail: props.thumbnail,
+					category: props.category,
+				}),
+			});
+
+			if (res.ok) {
+				const { message } = await res.json();
+				setFavorite((prev) => !prev);
+				toast.success(message);
+			} else {
+				toast.error("Favorite action failed");
+			}
+		} catch (err) {
+			toast.error(`Something went wrong ${err}`);
+		} finally {
+			setFavoriteLoading(false);
+		}
+	};
+
+	return (
+		<div
+			onClick={props.onClick}
+			className="p-2 w-72 flex flex-col rounded-2xl gap-y-3 shadow-md transition-transform hover:-translate-y-2 cursor-pointer"
+		>
+			{/* Image Background with Actions */}
+			<div
+				className="h-96 bg-slate-100 bg-center bg-cover rounded-2xl p-4 flex flex-col justify-between"
+				style={{ backgroundImage: `url(${props.thumbnail})` }}
+			>
+				{/* Favorite Button */}
+				<div className="flex justify-end">
+					<Button onClick={toggleFavorite}>
+						{favoriteLoading ? (
+							<Loader2 className="animate-spin text-gray-500" />
+						) : (
+							<Heart
+								className={`transition-colors ${
+									favorite ? "text-red-500" : "text-gray-500"
+								}`}
+								strokeWidth={2}
+								fill={favorite ? "currentColor" : "none"}
+							/>
+						)}
+					</Button>
+				</div>
+
+				{/* Bottom Row: Buy, Cart, Price */}
+				<div className="flex items-center justify-between mt-auto gap-2">
+					{/* Buy Now */}
+					<div
+						onClick={handleBuyNow}
+						className="group flex items-center gap-2 bg-black bg-opacity-50 px-3 py-2 rounded-full text-white text-sm transition"
+					>
+						<span>Buy Now</span>
+						<ArrowRight className="bg-white text-black h-6 w-6 p-1 rounded-full group-hover:rotate-90 transition-transform duration-500" />
+					</div>
+
+					{/* Add to Cart */}
+					<Button onClick={toggleCart}>
+						{cartLoading ? (
+							<Loader2 className="animate-spin text-gray-500" />
+						) : inCart ? (
+							<CheckSquare className="text-blue-500" />
+						) : (
+							<ShoppingBagIcon className="text-gray-500" />
+						)}
+					</Button>
+
+					{/* Price */}
+					<div className="bg-black text-white px-3 py-2 rounded-full text-sm h-10 flex items-center">
+						₹{props.price}
+					</div>
+				</div>
+			</div>
+
+			{/* Product Details */}
+			<div className="bg-gray-200 rounded-2xl p-4 h-20">
+				<h2 className="text-lg font-semibold truncate">
+					{props.title}
+				</h2>
+				<p className="text-sm text-gray-700 truncate">
+					{props.description}
+				</p>
+			</div>
+		</div>
+	);
 }

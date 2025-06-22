@@ -40,24 +40,32 @@ const brands = [
 
 export default function BrandsMarquee() {
 	return (
-		<div className="py-12">
-			<Marquee
-				// pauseOnHover
-				className="flex items-center gap-8 w-full overflow-hidden"
-			>
-				{brands.map((brand) => (
-					<Image
-						key={brand.name}
-						src={brand.logo}
-						alt={brand.name}
-						width={200}
-						height={50}
-						className={`object-fill h-28 ${
-							brand.name === "Adidas" ? "invert" : ""
-						}`}
-					/>
-				))}
-			</Marquee>
-		</div>
+		<section className="py-12 bg-white dark:bg-neutral-900 border-t border-b border-gray-200 dark:border-neutral-800">
+			<div className="max-w-screen-xl mx-auto px-4">
+				<h2 className="text-center text-xl font-semibold text-gray-800 dark:text-white mb-6">
+					Trusted by the best
+				</h2>
+				<Marquee className="flex items-center gap-10 w-full overflow-hidden">
+					{brands.map((brand) => (
+						<div
+							key={brand.name}
+							className="flex items-center justify-center min-w-[150px] h-20 hover:scale-105 transition-transform duration-300"
+						>
+							<Image
+								src={brand.logo}
+								alt={brand.name}
+								width={160}
+								height={60}
+								className="max-h-16 object-contain dark:invert"
+								onError={(e) =>
+									(e.currentTarget.src =
+										"https://via.placeholder.com/160x60?text=Brand")
+								}
+							/>
+						</div>
+					))}
+				</Marquee>
+			</div>
+		</section>
 	);
 }

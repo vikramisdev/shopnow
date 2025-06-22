@@ -59,3 +59,53 @@
 ::-webkit-scrollbar-thumb:hover {
   background-color: peru;
 }
+
+
+
+@layer base {
+  :root {
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+  .dark {
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@keyframes scroll-step {
+  0%, 18% {
+    transform: translateY(0%);
+  }
+  20%, 38% {
+    transform: translateY(-100%);
+  }
+  40%, 58% {
+    transform: translateY(-200%);
+  }
+  60%, 78% {
+    transform: translateY(-300%);
+  }
+  80%, 98% {
+    transform: translateY(-400%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+}
+
+.animate-scroll-step {
+  animation: scroll-step 30s ease-in-out infinite;
+}

@@ -1,68 +1,106 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { SignIn, useUser } from "@clerk/nextjs";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
+import Header from "../components/Header";
 import ProductPreview from "../components/ProductPreview";
+import Footer from "../components/Footer";
+import ProductPreviewSkeleton from "../components/skeletons/ProductPreviewSkeleton";
 
 interface ProductData {
-  id: number;
-  title: string;
-  description: string;
-  thumbnail: string;
-  images: Array<string>;
-  price: string;
-  category: string;
-  rating: number;
-  brand: string;
+	id: number;
+	title: string;
+	description: string;
+	thumbnail: string;
+	images: string[];
+	price: number;
+	category: string;
+	rating: number;
+	brand: string;
 }
 
-export default function Cart() {
-  const { isSignedIn } = useUser();
-  const params = useSearchParams();
-  const [result, setResult] = useState<ProductData[]>([]);
-  const productId = params.get("id");
+export default function CartPage() {
+	const user = useSelector((state: RootState) => state.auth.user);
+	const params = useSearchParams();
+	const [product, setProduct] = useState<ProductData | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(false);
 
-  useEffect(() => {
-    fetch(`https://dummyjson.com/products/category/${params.get("category")}`)
-      .then((res) => res.json())
-      .then((data) => setResult(data.products))
-      .catch(() => {});
-  });
+	const category = params.get("category");
+	const productId = params.get("id");
 
-  return isSignedIn ? (
+	useEffect(() => {
+		if (!category || !productId) return;
+
+		const fetchProduct = async () => {
+			try {
+				const res = await fetch(
+					`https://dummyjson.com/products/category/${category}`
+				);
+				if (!res.ok) throw new Error("Failed to fetch product");
+
+				const data = await res.json();
+				const matched = data.products.find(
+					(p: ProductData) => String(p.id) === productId
+				);
+				setProduct(matched || null);
+			} catch (err) {
+				setError(true);
+				console.log(err);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchProduct();
+	}, [category, productId]);
+
+	if (!user || !user.email) {
+		return (
+			<div className="h-screen flex items-center justify-center">
+				<h2 className="text-xl font-semibold">
+					Please login to view your cart.
+				</h2>
+			</div>
+		);
+	}
+
+	return (
 		<div>
 			<Header />
-			<div className="md:px-12 px-6 pt-24 ">
-				{result.map((element) =>
-					String(element.id) == productId ? (
-						<ProductPreview
-							key={element.id}
-							id={element.id}
-							title={element.title}
-							description={element.description}
-							price={element.price}
-							thumbnail={element.images[0]}
-							rating={element.rating}
-							brand={element.brand}
-							category={element.category}
-						/>
-					) : (
-						<span key={element.id}></span>
-					)
+
+			<div className="md:px-12 px-6 pt-24 min-h-[60vh]">
+				{loading ? (
+					<ProductPreviewSkeleton />
+				) : error ? (
+					<p className="text-center text-red-500">
+						Something went wrong. Try again later.
+					</p>
+				) : product ? (
+					<ProductPreview
+						id={product.id}
+						title={product.title}
+						description={product.description}
+						price={product.price}
+						thumbnail={product.images[0]}
+						rating={product.rating}
+						brand={product.brand}
+						category={product.category}
+					/>
+				) : (
+					<div className="text-center text-muted-foreground">
+						<p>Product not found or invalid query parameters.</p>
+					</div>
 				)}
 			</div>
 
-			{params.get("id") ? null : (
-				<div className="flex justify-center items-center h-screen bg-[url('/images/cart.svg')] bg-no-repeat bg-top bg-contain md:bg-cover"></div>
+			{!productId && (
+				<div className="flex justify-center items-center h-[70vh] bg-[url('/images/cart.svg')] bg-no-repeat bg-contain md:bg-cover" />
 			)}
+
 			<Footer />
 		</div>
-  ) : (
-		<div className="h-screen w-full flex justify-center items-center">
-			<SignIn routing="hash" />
-		</div>
-  );
+	);
 }
