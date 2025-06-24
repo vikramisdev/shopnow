@@ -16,15 +16,8 @@ import { useSession } from "next-auth/react";
 import Logo from "./Logo";
 import Button from "./Button";
 import LoginModal from "./LoginModal";
-import DashboardModal from "./DashboardModal";
+import DashboardModal from "./dashboard/DashboardModal";
 import SearchModal from "./SearchModal";
-
-import {
-	Tooltip,
-	TooltipTrigger,
-	TooltipContent,
-	TooltipProvider,
-} from "@/components/ui/tooltip";
 
 interface HeaderInterface {
 	expandSearchBar?: boolean;
@@ -47,10 +40,7 @@ const Header: React.FC<HeaderInterface> = ({ expandSearchBar = false }) => {
 	};
 
 	useEffect(() => {
-		const handleScroll = () => {
-			setMenu(false);
-		};
-
+		const handleScroll = () => setMenu(false);
 		window.addEventListener("scroll", handleScroll);
 		return () => window.removeEventListener("scroll", handleScroll);
 	}, []);
@@ -59,108 +49,95 @@ const Header: React.FC<HeaderInterface> = ({ expandSearchBar = false }) => {
 		<div className="flex md:p-6 p-4 justify-between items-center fixed w-full top-0 z-10 bg-white">
 			<Logo />
 
-			<TooltipProvider>
-				{/* Search + Auth + Mobile Menu */}
-				<div className="flex items-center gap-4 md:gap-2">
-					{expandSearchBar ? (
-						<input
-							ref={searchBar}
-							className="border-gray-200 border-2 rounded-full px-4 py-2 w-40 md:w-fit"
-							type="text"
-							placeholder="Search products"
-							autoFocus
-							onChange={(event) => pushToUrl(event.target.value)}
+			<div className="flex items-center gap-4 md:gap-2">
+				{expandSearchBar ? (
+					<input
+						ref={searchBar}
+						className="border-gray-200 border-2 rounded-full px-4 py-2 w-40 md:w-fit"
+						type="text"
+						placeholder="Search products"
+						autoFocus
+						onChange={(event) => pushToUrl(event.target.value)}
+					/>
+				) : (
+					<SearchModal
+						trigger={
+							<Button>
+								<Search aria-label="Search" />
+							</Button>
+						}
+					/>
+				)}
+
+				{/* Mobile Menu Icon */}
+				<div className="md:hidden">
+					{!isMenuOpen ? (
+						<MenuIcon
+							className="transition-all duration-500"
+							onClick={() => setMenu(true)}
+							aria-label="Open Menu"
 						/>
 					) : (
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<SearchModal
-									trigger={
-										<Button>
-											<Search aria-label="Search" />
-										</Button>
-									}
-								/>
-							</TooltipTrigger>
-							<TooltipContent>Search</TooltipContent>
-						</Tooltip>
+						<X
+							className="transition-all duration-500"
+							onClick={() => setMenu(false)}
+							aria-label="Close Menu"
+						/>
 					)}
-
-					{/* Mobile Menu Icon */}
-					<div className="md:hidden">
-						{!isMenuOpen ? (
-							<MenuIcon
-								className="transition-all duration-500"
-								onClick={() => setMenu(true)}
-								aria-label="Open Menu"
-							/>
-						) : (
-							<X
-								className="transition-all duration-500"
-								onClick={() => setMenu(false)}
-								aria-label="Close Menu"
-							/>
-						)}
-					</div>
-
-					{/* Auth (Desktop Only) */}
-					<div className="hidden md:block">
-						<Tooltip>
-							<TooltipTrigger asChild>
-								{session ? (
-									<DashboardModal
-										trigger={
-											<Button>
-												<UserIcon aria-label="Account" />
-											</Button>
-										}
-									/>
-								) : (
-									<LoginModal
-										trigger={
-											<Button>
-												<UserIcon aria-label="Login" />
-											</Button>
-										}
-									/>
-								)}
-							</TooltipTrigger>
-							<TooltipContent>
-								{session ? "Account" : "Login"}
-							</TooltipContent>
-						</Tooltip>
-					</div>
 				</div>
 
-				{/* Desktop Actions */}
-				<div className="md:flex gap-2 hidden">
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button
-								onClick={() =>
-									router.push("/dashboard?tab=favorites")
-								}
-							>
-								<HeartIcon aria-label="Favorite" />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent>Favorites</TooltipContent>
-					</Tooltip>
-
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button
-								onClick={() =>
-									router.push("/dashboard?tab=cart")
-								}
-							>
-								<ShoppingBagIcon aria-label="Cart" />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent>Cart</TooltipContent>
-					</Tooltip>
+				{/* Auth Button - Desktop */}
+				<div className="hidden md:block">
+					{session ? (
+						<DashboardModal
+							trigger={
+								<Button>
+									<UserIcon aria-label="Account" />
+								</Button>
+							}
+						/>
+					) : (
+						<LoginModal
+							trigger={
+								<Button>
+									<UserIcon aria-label="Login" />
+								</Button>
+							}
+						/>
+					)}
 				</div>
-			</TooltipProvider>
+			</div>
+
+			{/* Desktop Actions */}
+			<div className="md:flex gap-2 hidden">
+				<Button onClick={() => router.push("/dashboard?tab=favorites")}>
+					<HeartIcon aria-label="Favorites" />
+				</Button>
+				<Button onClick={() => router.push("/dashboard?tab=cart")}>
+					<ShoppingBagIcon aria-label="Cart" />
+				</Button>
+				{session && (
+					<Button
+						onClick={() => router.push("/dashboard?tab=orders")}
+					>
+						{/* Simple custom Orders icon (you can replace if needed) */}
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="w-5 h-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							strokeWidth={2}
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								d="M9 17v-6h6v6m-6 4h6a2 2 0 002-2v-6a2 2 0 00-2-2h-1V7a3 3 0 00-6 0v4H9a2 2 0 00-2 2v6a2 2 0 002 2z"
+							/>
+						</svg>
+					</Button>
+				)}
+			</div>
 
 			{/* Mobile Dropdown Menu */}
 			<div
@@ -169,26 +146,33 @@ const Header: React.FC<HeaderInterface> = ({ expandSearchBar = false }) => {
 				}`}
 			>
 				<div className="flex flex-col gap-4 px-6 py-8">
-					{["Home", "Cart", "Favorite", "About Us", "Contact Us"].map(
-						(item, index) => (
-							<React.Fragment key={index}>
-								<Link
-									className="text-lg font-semibold"
-									href={
-										item === "Cart"
-											? "/dashboard?tab=cart"
-											: item === "Favorite"
-											? "/dashboard?tab=favorites"
-											: `/${item
-													.toLowerCase()
-													.replace(" ", "")}`
-									}
-								>
-									{item}
-								</Link>
-								<hr />
-							</React.Fragment>
-						)
+					{["Home", "Cart", "Favorite"].map((item, index) => (
+						<React.Fragment key={index}>
+							<Link
+								className="text-lg font-semibold"
+								href={
+									item === "Cart"
+										? "/dashboard?tab=cart"
+										: item === "Favorite"
+										? "/dashboard?tab=favorites"
+										: "/"
+								}
+							>
+								{item}
+							</Link>
+							<hr />
+						</React.Fragment>
+					))}
+					{session && (
+						<>
+							<Link
+								className="text-lg font-semibold"
+								href="/dashboard?tab=orders"
+							>
+								Orders
+							</Link>
+							<hr />
+						</>
 					)}
 				</div>
 			</div>

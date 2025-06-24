@@ -51,22 +51,22 @@ export default function DashboardModal({ trigger }: DashboardModalProps) {
 		<Dialog>
 			<DialogTrigger asChild>{trigger}</DialogTrigger>
 
-			<DialogContent className="sm:max-w-sm p-6 rounded-2xl shadow-lg border border-gray-200">
+			<DialogContent className="sm:max-w-sm p-6 rounded-xl shadow-xl border border-gray-200 bg-white animate-in fade-in duration-200">
 				<DialogHeader>
-					<DialogTitle className="text-[17px] font-semibold text-gray-800">
-						Account
+					<DialogTitle className="text-[18px] font-medium text-gray-900">
+						Account Details
 					</DialogTitle>
-					<DialogDescription className="text-sm text-gray-500">
+					<DialogDescription className="text-sm text-gray-600">
 						Signed in as{" "}
-						<span className="text-gray-700 font-medium">
+						<span className="text-gray-800 font-medium">
 							{user?.email}
 						</span>
 					</DialogDescription>
 				</DialogHeader>
 
-				{/* User Info */}
-				<div className="flex items-center gap-4 mt-6 px-1">
-					<Avatar className="h-14 w-14 rounded-full border">
+				{/* Avatar & User Info */}
+				<div className="flex items-center gap-4 mt-5">
+					<Avatar className="h-14 w-14 border border-gray-300 shadow-sm">
 						{user?.photo ? (
 							<img
 								src={user.photo}
@@ -74,45 +74,39 @@ export default function DashboardModal({ trigger }: DashboardModalProps) {
 								className="w-full h-full object-cover rounded-full"
 							/>
 						) : (
-							<AvatarFallback className="text-lg font-semibold bg-muted text-muted-foreground">
+							<AvatarFallback className="bg-gray-100 text-gray-600 font-semibold">
 								{user?.email?.charAt(0).toUpperCase() ?? "U"}
 							</AvatarFallback>
 						)}
 					</Avatar>
-					<div className="flex flex-col">
-						<span className="text-sm font-medium text-gray-900 leading-tight">
+					<div className="flex flex-col gap-0.5">
+						<p className="text-sm font-semibold text-gray-900">
 							{user?.name || "Unknown User"}
-						</span>
-						<span className="text-xs text-gray-500 truncate">
+						</p>
+						<p className="text-xs text-gray-500 truncate">
 							{user?.email || "your@email.com"}
-						</span>
+						</p>
 					</div>
 				</div>
 
-				<div>
-					{/* Dashboard Button */}
-					<div className="mt-5">
-						<Button
-							onClick={goToDashboard}
-							variant="ghost"
-							className="w-full text-white bg-black font-medium hover:bg-gray-100 rounded-full"
-						>
-							Dashboard
-						</Button>
-					</div>
+				{/* Actions */}
+				<div className="mt-6 space-y-3">
+					<Button
+						onClick={goToDashboard}
+						className="w-full bg-blue-600 text-white hover:bg-blue-700 transition rounded-full font-medium"
+					>
+						Go to Dashboard
+					</Button>
 
-					{/* Logout */}
-					<div className="mt-3">
-						<Button
-							onClick={handleLogout}
-							disabled={loading}
-							variant="outline"
-							className="w-full flex items-center justify-center gap-2 rounded-full border-red-500 text-red-600 hover:bg-red-50 transition-all"
-						>
-							<LogOut className="h-4 w-4" />
-							{loading ? "Logging out..." : "Logout"}
-						</Button>
-					</div>
+					<Button
+						onClick={handleLogout}
+						disabled={loading}
+						variant="outline"
+						className="w-full border-red-500 text-red-600 hover:bg-red-50 hover:text-red-700 transition rounded-full flex items-center justify-center gap-2"
+					>
+						<LogOut className="h-4 w-4" />
+						{loading ? "Logging out..." : "Logout"}
+					</Button>
 				</div>
 			</DialogContent>
 		</Dialog>

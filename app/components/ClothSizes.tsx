@@ -1,40 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 
 interface ClothSizesInterface {
-    className?: string;
+	className?: string;
+	onChange?: (value: string) => void;
+	defaultSize: string;
 }
 
-function ClothSizes({ className }: ClothSizesInterface) {
-  return (
-    <div className={`flex gap-x-3 ${className}`}>
-      <h1><b>Size:</b></h1>
-      <input
-        className="list-none before:content-['S'] checked:before:text-white checked:before:bg-black before:px-[10px] before:py-[4px] before:rounded-full appearance-none before:cursor-pointer before:transition-all"
-        name="size"
-        type="radio"
-      ></input>
-      <input
-        className="list-none before:content-['M'] checked:before:text-white checked:before:bg-black before:px-[10px] before:py-[4px] before:rounded-full appearance-none before:cursor-pointer before:transition-all"
-        name="size"
-        type="radio"
-      ></input>
-      <input
-        className="list-none before:content-['L'] checked:before:text-white checked:before:bg-black before:px-[10px] before:py-[4px] before:rounded-full appearance-none before:cursor-pointer before:transition-all"
-        name="size"
-        type="radio"
-      ></input>
-      <input
-        className="list-none before:content-['XL'] checked:before:text-white checked:before:bg-black before:px-[10px] before:py-[4px] before:rounded-full appearance-none before:cursor-pointer before:transition-all"
-        name="size"
-        type="radio"
-      ></input>
-      <input
-        className="list-none before:content-['XXL'] checked:before:text-white checked:before:bg-black before:px-[10px] before:py-[4px] before:rounded-full appearance-none before:cursor-pointer before:transition-all"
-        name="size"
-        type="radio"
-      ></input>
-    </div>
-  );
+const sizes = ["S", "M", "L", "XL", "XXL"];
+
+function ClothSizes({
+	className = "",
+	onChange,
+	defaultSize = "S",
+}: ClothSizesInterface) {
+	const [selected, setSelected] = useState(defaultSize);
+
+	const handleSelect = (size: string) => {
+		setSelected(size);
+		onChange?.(size);
+	};
+
+	return (
+		<div className={`flex gap-x-3 items-center ${className}`}>
+			<h1 className="font-semibold">Size:</h1>
+			{sizes.map((size) => (
+				<label key={size}>
+					<input
+						type="radio"
+						name="size"
+						value={size}
+						checked={selected === size}
+						onChange={() => handleSelect(size)}
+						className="list-none before:content-[''] checked:before:text-white checked:before:bg-black
+							before:px-[10px] before:py-[4px] before:rounded-full
+							appearance-none before:cursor-pointer before:transition-all
+							before:content-[attr(value)]"
+					/>
+				</label>
+			))}
+		</div>
+	);
 }
 
 export default ClothSizes;

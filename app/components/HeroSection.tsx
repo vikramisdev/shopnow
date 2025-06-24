@@ -18,8 +18,7 @@ export default function HeroSection() {
 	useEffect(() => {
 		const timer = setInterval(() => {
 			setCurrentIndex((prev) => (prev + 1) % heroImages.length);
-		}, 4000); // every 4s
-
+		}, 4000);
 		return () => clearInterval(timer);
 	}, []);
 
@@ -32,28 +31,28 @@ export default function HeroSection() {
 	return (
 		<section
 			id="hero-section"
-			className="flex flex-col-reverse md:flex-row items-center px-5 py-16 gap-10 bg-white"
+			className="flex flex-col-reverse md:flex-row items-center px-6 md:px-16 py-16 md:py-24 gap-10 bg-white relative overflow-hidden"
 		>
 			{/* Text Section */}
-			<div className="flex-1 text-center md:text-left z-10">
-				<h1 className="text-3xl md:text-5xl font-bold text-zinc-900">
-					Style Meets Comfort.
+			<div className="flex-1 z-10 text-center md:text-left space-y-6">
+				<h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-zinc-900 leading-tight">
+					Style Meets Comfort
 				</h1>
-				<p className="mt-4 text-lg md:text-xl text-gray-600 max-w-xl">
-					Discover top-rated brands, curated collections, and tailored
-					deals just for you.
+				<p className="text-lg md:text-xl text-gray-600 max-w-xl mx-auto md:mx-0 leading-relaxed">
+					Discover top-rated brands, curated collections, and
+					exclusive deals— all tailored for your lifestyle.
 				</p>
 				<button
 					onClick={scrollDown}
-					className="group mt-8 inline-flex items-center gap-2 bg-black text-white rounded-full px-6 py-3 hover:bg-zinc-800 transition"
+					className="group mt-4 inline-flex items-center gap-2 bg-zinc-900 text-white font-medium rounded-full px-6 py-3 hover:bg-zinc-800 transition-all"
 				>
 					Start Shopping
-					<ArrowRight className="h-6 w-6 bg-white text-black rounded-full transition-transform group-hover:translate-x-1" />
+					<ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1 bg-white text-black rounded-full p-1" />
 				</button>
 			</div>
 
-			{/* Scroll-Up Image Carousel */}
-			<div className="flex-1 w-full h-[88vh] overflow-hidden rounded-b-xl shadow-md relative">
+			{/* Carousel Section */}
+			<div className="flex-1 w-full h-[88vh] rounded-3xl overflow-hidden relative shadow-xl">
 				<div
 					className="h-full transition-transform duration-1000 ease-in-out"
 					style={{
@@ -71,7 +70,10 @@ export default function HeroSection() {
 								fill
 								className="object-cover object-center"
 								sizes="(max-width: 768px) 100vw, 50vw"
+								priority={index === 0}
 							/>
+							{/* Overlay for contrast */}
+							<div className="absolute inset-0 bg-black/20" />
 						</div>
 					))}
 				</div>

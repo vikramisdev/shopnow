@@ -1,37 +1,55 @@
-// models/Order.ts
+import { Schema, model, models, Types } from "mongoose";
 
-import mongoose, { model, models, Schema } from "mongoose";
+const productSchema = new Schema(
+	{
+		productId: { type: Number, required: true }, // If from external DB or static data
+		title: { type: String, required: true },
+		price: { type: Number, required: true, min: 0 },
+		quantity: { type: Number, required: true, min: 1 },
+		image: { type: String },
+	},
+	{ _id: false } // Prevents automatic _id for subdocuments
+);
 
 const orderSchema = new Schema(
 	{
 		userId: {
-			type: mongoose.Schema.Types.ObjectId,
+			type: Types.ObjectId,
 			ref: "User",
 			required: true,
 		},
-		products: [
-			{
-				productId: { type: Number, required: true }, // Match your `id` type
-				title: String,
-				price: Number,
-				quantity: Number,
-				image: String,
-			},
-		],
-		totalAmount: Number,
-		address: String,
+		products: {
+			type: [productSchema],
+			required: true,
+			validate: [
+				(val: unknown[]) => val.length > 0,
+				"At least one product required",
+			],
+		},
+		totalAmount: {
+			type: Number,
+			required: true,
+			min: 0,
+		},
+		address: {
+			type: String,
+			required: true,
+			trim: true,
+		},
 		paymentMethod: {
 			type: String,
-			enum: ["creditCard", "upi", "cashOnDelivery"], // must match exactly
+			enum: ["creditCard", "upi", "cashOnDelivery"],
 			required: true,
 		},
 		deliveryEstimate: {
-			start: Date,
-			end: Date,
+			start: { type: Date, required: true },
+			end: { type: Date, required: true },
 		},
 		status: {
 			type: String,
+			enum: ["pending", "shipped", "delivered", "cancelled"],
 			default: "pending",
+			lowercase: true,
 		},
 	},
 	{ timestamps: true }

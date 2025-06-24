@@ -1,17 +1,39 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
-import { useState, FormEvent, ChangeEvent } from "react";
+import { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import Image from "next/image";
+import { toast } from "sonner"; // Optional: fallback to setMessage if not using
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
 	const [photo, setPhoto] = useState<File | null>(null);
 	const [preview, setPreview] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
-	const [message, setMessage] = useState<string | null>(null);
+	const [message, setMessage] = useState<string | null>(null); // fallback
+
+	const { status } = useSession();
+	const router = useRouter();
+
+	// Clean up preview URL to avoid memory leaks
+	useEffect(() => {
+		return () => {
+			if (preview) URL.revokeObjectURL(preview);
+		};
+	}, [preview]);
+
+	useEffect(() => {
+		if (status === "authenticated") {
+			router.replace("/"); // redirect to home
+		}
+	}, [status]);
 
 	const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
@@ -27,8 +49,15 @@ export default function RegisterPage() {
 
 	const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		if (loading) return;
 		setLoading(true);
 		setMessage(null);
+
+		if (!email.includes("@") || password.length < 6) {
+			setMessage("❌ Enter a valid email and minimum 6-char password.");
+			setLoading(false);
+			return;
+		}
 
 		const formData = new FormData();
 		formData.append("name", name);
@@ -42,18 +71,27 @@ export default function RegisterPage() {
 				body: formData,
 			});
 
-			const resultText = await res.text();
+			let resultMessage = "";
+			const contentType = res.headers.get("Content-Type");
+
+			if (contentType && contentType.includes("application/json")) {
+				const json = await res.json();
+				resultMessage = json.message || "No message from server";
+			} else {
+				resultMessage = await res.text(); // fallback for plain text
+			}
 
 			if (res.ok) {
-				setMessage("✅ Registered successfully! Redirecting...");
+				toast.success("✅ " + resultMessage);
 				setTimeout(() => {
 					window.location.href = "/login";
-				}, 2000);
+				}, 1500);
 			} else {
-				setMessage(`❌ ${resultText || "Registration failed"}`);
+				toast.error("❌ " + resultMessage);
 			}
 		} catch (err) {
-			setMessage(`❌ An error occurred. ${err}`);
+			toast.error("❌ An error occurred during registration.");
+			console.error(err);
 		} finally {
 			setLoading(false);
 		}
@@ -121,6 +159,7 @@ export default function RegisterPage() {
 					</div>
 
 					<form onSubmit={handleRegister} className="space-y-5">
+						{/* Full Name */}
 						<div className="space-y-1">
 							<label
 								htmlFor="name"
@@ -128,18 +167,17 @@ export default function RegisterPage() {
 							>
 								Full Name
 							</label>
-							<input
+							<Input
 								id="name"
 								type="text"
 								value={name}
-								autoFocus
 								onChange={(e) => setName(e.target.value)}
 								placeholder="John Doe"
 								required
-								className="w-full border-b border-gray-300 focus:outline-none focus:border-blue-500 py-2"
 							/>
 						</div>
 
+						{/* Email */}
 						<div className="space-y-1">
 							<label
 								htmlFor="email"
@@ -147,17 +185,17 @@ export default function RegisterPage() {
 							>
 								Email
 							</label>
-							<input
+							<Input
 								id="email"
 								type="email"
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
 								placeholder="john@example.com"
 								required
-								className="w-full border-b border-gray-300 focus:outline-none focus:border-blue-500 py-2"
 							/>
 						</div>
 
+						{/* Password */}
 						<div className="space-y-1">
 							<label
 								htmlFor="password"
@@ -165,17 +203,27 @@ export default function RegisterPage() {
 							>
 								Password
 							</label>
-							<input
+							<Input
 								id="password"
-								type="password"
+								type={showPassword ? "text" : "password"}
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
 								placeholder="••••••••"
 								required
-								className="w-full border-b border-gray-300 focus:outline-none focus:border-blue-500 py-2"
 							/>
+							<label className="text-xs text-gray-500 flex items-center gap-2 mt-1">
+								<input
+									type="checkbox"
+									checked={showPassword}
+									onChange={() =>
+										setShowPassword((prev) => !prev)
+									}
+								/>
+								Show password
+							</label>
 						</div>
 
+						{/* Fallback message (if toast not used) */}
 						{message && (
 							<p
 								className={`text-sm ${
@@ -188,17 +236,14 @@ export default function RegisterPage() {
 							</p>
 						)}
 
-						<button
+						{/* Submit */}
+						<Button
 							type="submit"
 							disabled={loading}
-							className={`w-full ${
-								loading
-									? "bg-gray-400 cursor-not-allowed"
-									: "bg-blue-600 hover:bg-blue-700"
-							} text-white font-semibold py-2 rounded-lg transition duration-200`}
+							className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
 						>
 							{loading ? "Registering..." : "Create Account"}
-						</button>
+						</Button>
 					</form>
 
 					<p className="text-sm text-gray-500">

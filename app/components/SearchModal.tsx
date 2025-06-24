@@ -23,6 +23,7 @@ interface Product {
 	title: string;
 	thumbnail: string;
 	price: number;
+	category: string; // 🛠️ Needed for routing
 }
 
 export default function SearchModal({ trigger }: SearchModalProps) {
@@ -36,7 +37,7 @@ export default function SearchModal({ trigger }: SearchModalProps) {
 			if (query.trim().length > 1) {
 				searchProducts();
 			}
-		}, 400); // debounce
+		}, 400);
 
 		return () => clearTimeout(delay);
 	}, [query]);
@@ -45,11 +46,13 @@ export default function SearchModal({ trigger }: SearchModalProps) {
 		setLoading(true);
 		try {
 			const res = await fetch(
-				`https://dummyjson.com/products/search?q=${query}`
+				`https://dummyjson.com/products/search?q=${encodeURIComponent(
+					query
+				)}`
 			);
 			if (!res.ok) throw new Error("Search failed");
 			const data = await res.json();
-			setResults(data.products); // `products` is the array
+			setResults(data.products || []);
 		} catch (error) {
 			console.error(error);
 			toast.error("Search failed. Try again.");
@@ -58,8 +61,12 @@ export default function SearchModal({ trigger }: SearchModalProps) {
 		}
 	};
 
-	const handleProductClick = (id: number) => {
-		router.push(`/product/${id}`);
+	const handleProductClick = (product: Product) => {
+		router.push(
+			`/products?category=${encodeURIComponent(product.category)}&id=${
+				product.id
+			}`
+		);
 	};
 
 	return (
@@ -96,7 +103,7 @@ export default function SearchModal({ trigger }: SearchModalProps) {
 					{results.map((product) => (
 						<div
 							key={product.id}
-							onClick={() => handleProductClick(product.id)}
+							onClick={() => handleProductClick(product)}
 							className="flex items-center gap-4 p-2 rounded-md hover:bg-gray-100 cursor-pointer transition-all"
 						>
 							<Image

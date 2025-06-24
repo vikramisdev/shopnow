@@ -1,5 +1,7 @@
+"use client";
+
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Accordian from "./Accordian";
 import { StarFilledIcon } from "@radix-ui/react-icons";
 import ClothSizes from "./ClothSizes";
@@ -9,6 +11,12 @@ import { Check, Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import {
+	useToggleCartItemMutation,
+	useToggleFavoriteMutation,
+	useGetCartQuery,
+	useGetFavoritesQuery,
+} from "@/store/services/userApi";
 
 interface ProductPreviewProps {
 	id: number;
@@ -19,8 +27,14 @@ interface ProductPreviewProps {
 	category?: string;
 	rating: number;
 	brand?: string;
-	isInCart?: boolean;
-	isFavorite?: boolean;
+}
+
+interface UserItem {
+	productId: number;
+	title: string;
+	price: number;
+	thumbnail: string;
+	category: string;
 }
 
 const ProductPreview: React.FC<ProductPreviewProps> = ({
@@ -32,54 +46,62 @@ const ProductPreview: React.FC<ProductPreviewProps> = ({
 	rating,
 	brand,
 	category,
-	isInCart = false,
-	isFavorite = false,
 }) => {
 	const router = useRouter();
-	const [itemInCart, setItemInCart] = useState(isInCart);
-	const [favorite, setFavorite] = useState(isFavorite);
+	const [selectedSize, setSelectedSize] = useState("S");
+	const [itemInCart, setItemInCart] = useState(false);
+	const [favorite, setFavorite] = useState(false);
 	const [imageLoading, setImageLoading] = useState(true);
 
+	const { data: cartData, refetch: refetchCart } = useGetCartQuery(undefined);
+	const { data: favoritesData, refetch: refetchFavorites } =
+		useGetFavoritesQuery(undefined);
+	const [addToCart] = useToggleCartItemMutation();
+	const [toggleFavorite] = useToggleFavoriteMutation();
+
+	useEffect(() => {
+		if (cartData) {
+			setItemInCart(
+				cartData.some((item: UserItem) => item.productId === id)
+			);
+		}
+		if (favoritesData) {
+			setFavorite(
+				favoritesData.some((item: UserItem) => item.productId === id)
+			);
+		}
+	}, [cartData, favoritesData, id]);
+
 	const handleAddToCart = async () => {
-		const res = await fetch("/api/cart", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
+		try {
+			await addToCart({
 				productId: id,
 				title,
 				price,
 				thumbnail,
 				category,
-			}),
-		});
-
-		if (res.ok) {
-			setItemInCart((prev) => !prev);
+			}).unwrap();
+			refetchCart();
 			toast.success(itemInCart ? "Removed from cart" : "Added to cart");
-		} else {
+		} catch {
 			toast.error("Cart action failed");
 		}
 	};
 
 	const handleFavorite = async () => {
-		const res = await fetch("/api/favorite", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
+		try {
+			await toggleFavorite({
 				productId: id,
 				title,
 				price,
 				thumbnail,
 				category,
-			}),
-		});
-
-		if (res.ok) {
-			setFavorite((prev) => !prev);
+			}).unwrap();
+			refetchFavorites();
 			toast.success(
 				favorite ? "Removed from favorites" : "Added to favorites"
 			);
-		} else {
+		} catch {
 			toast.error("Favorite action failed");
 		}
 	};
@@ -90,15 +112,18 @@ const ProductPreview: React.FC<ProductPreviewProps> = ({
 				<h1 className="md:text-8xl text-3xl font-semibold mt-6 md:mt-0">
 					{title}
 				</h1>
-				<h1 className="text-2xl pt-8 font-semibold">₹{price}</h1>
-
-				<ClothSizes className="mt-8" />
+				<h1 className="text-2xl pt-8 font-semibold">
+					₹{(Number(price) * 83).toFixed(0)}
+				</h1>
+				<ClothSizes
+					className="mt-8"
+					defaultSize={selectedSize}
+					onChange={(size) => setSelectedSize(size)}
+				/>
 				<p className="pt-4 md:pr-36">{description}</p>
-
 				<p className="py-1 px-2 w-fit font-semibold bg-green-50 mt-6 text-green-950">
 					Exchange & Return Available
 				</p>
-
 				<Accordian className="my-4">
 					<h1>
 						<b>Brand:</b> {brand}
@@ -118,11 +143,9 @@ const ProductPreview: React.FC<ProductPreviewProps> = ({
 						{rating}
 					</h1>
 				</Accordian>
-
 				<Accordian title="Payment Methods" className="my-4">
 					<h1>Cash On Delivery</h1>
 				</Accordian>
-
 				<div className="flex gap-x-4 pt-6">
 					<Button
 						className="hover:text-red-600"
@@ -156,7 +179,6 @@ const ProductPreview: React.FC<ProductPreviewProps> = ({
 						BUY NOW
 					</Button>
 				</div>
-
 				<div className="pt-10">
 					<h1 className="text-xl font-semibold">Reviews</h1>
 					<Review />

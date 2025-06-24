@@ -1,7 +1,7 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { signIn, getSession } from "next-auth/react";
+import { FormEvent, useEffect, useState } from "react";
+import { signIn, getSession, useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
@@ -12,8 +12,16 @@ export default function LoginPage() {
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
 
+	const { status } = useSession();
+
 	const router = useRouter();
 	const dispatch = useDispatch();
+
+	useEffect(() => {
+		if (status === "authenticated") {
+			router.push("/");
+		}
+	}, [status]);
 
 	const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();

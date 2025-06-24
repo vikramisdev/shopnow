@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import {
 	ArrowRight,
 	CheckSquare,
@@ -8,33 +7,72 @@ import {
 	Loader2,
 	ShoppingBagIcon,
 } from "lucide-react";
-import { MouseEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { MouseEvent, useMemo } from "react";
 import { toast } from "sonner";
 import Button from "./Button";
+import {
+	useToggleCartItemMutation,
+	useToggleFavoriteMutation,
+	useGetCartQuery,
+	useGetFavoritesQuery,
+} from "@/store/services/userApi";
 
 interface ItemProps {
-	id: string;
+	id: number;
 	thumbnail: string;
 	title: string;
 	description: string;
-	price: number;
+	price: number; // USD
 	category: string;
 	onClick?: () => void;
 	isInCart?: boolean;
 	isFavorite?: boolean;
 }
 
+interface UserItem {
+	productId: number;
+	title: string;
+	price: number;
+	thumbnail: string;
+	category: string;
+}
+
+const toINR = (usd: number) => {
+	const rate = 83;
+	return `₹${Math.round(usd * rate).toLocaleString("en-IN")}`;
+};
+
 export default function Product(props: ItemProps) {
 	const router = useRouter();
-	const [inCart, setInCart] = useState(false);
-	const [favorite, setFavorite] = useState(false);
-	const [cartLoading, setCartLoading] = useState(false);
-	const [favoriteLoading, setFavoriteLoading] = useState(false);
 
-	useEffect(() => {
-		setInCart(props.isInCart ?? false);
-		setFavorite(props.isFavorite ?? false);
-	}, [props.isInCart, props.isFavorite]);
+	const { data: cartData, refetch: refetchCart } = useGetCartQuery(undefined);
+	const { data: favoritesData, refetch: refetchFavorites } =
+		useGetFavoritesQuery(undefined);
+	const [toggleCartItem, { isLoading: cartLoading }] =
+		useToggleCartItemMutation();
+	const [toggleFavoriteItem, { isLoading: favoriteLoading }] =
+		useToggleFavoriteMutation();
+
+	const isInCart = useMemo(() => {
+		if (typeof props.isInCart === "boolean") return props.isInCart;
+		return cartData?.some((item: UserItem) => item.productId === props.id);
+	}, [props.isInCart, cartData, props.id]);
+
+	const isFavorite = useMemo(() => {
+		if (typeof props.isFavorite === "boolean") return props.isFavorite;
+		return favoritesData?.some(
+			(item: UserItem) => item.productId === props.id
+		);
+	}, [props.isFavorite, favoritesData, props.id]);
+
+	const productData: UserItem = {
+		productId: props.id,
+		title: props.title,
+		price: props.price,
+		thumbnail: props.thumbnail,
+		category: props.category,
+	};
 
 	const handleBuyNow = (e: MouseEvent) => {
 		e.stopPropagation();
@@ -43,63 +81,27 @@ export default function Product(props: ItemProps) {
 
 	const toggleCart = async (e: MouseEvent) => {
 		e.stopPropagation();
-		setCartLoading(true);
-
 		try {
-			const res = await fetch("/api/cart", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					productId: Number(props.id),
-					title: props.title,
-					price: props.price,
-					thumbnail: props.thumbnail,
-					category: props.category,
-				}),
-			});
-
-			if (res.ok) {
-				const { message } = await res.json();
-				setInCart((prev) => !prev);
-				toast.success(message);
-			} else {
-				toast.error("Cart action failed");
-			}
+			await toggleCartItem(productData).unwrap();
+			await refetchCart();
+			toast.success(isInCart ? "Removed from cart" : "Added to cart");
 		} catch (err) {
-			toast.error(`Something went wrong ${err}`);
-		} finally {
-			setCartLoading(false);
+			toast.error("Cart update failed");
+			console.error("Cart toggle error:", err);
 		}
 	};
 
 	const toggleFavorite = async (e: MouseEvent) => {
 		e.stopPropagation();
-		setFavoriteLoading(true);
-
 		try {
-			const res = await fetch("/api/favorite", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					productId: Number(props.id),
-					title: props.title,
-					price: props.price,
-					thumbnail: props.thumbnail,
-					category: props.category,
-				}),
-			});
-
-			if (res.ok) {
-				const { message } = await res.json();
-				setFavorite((prev) => !prev);
-				toast.success(message);
-			} else {
-				toast.error("Favorite action failed");
-			}
+			await toggleFavoriteItem(productData).unwrap();
+			await refetchFavorites();
+			toast.success(
+				isFavorite ? "Removed from favorites" : "Added to favorites"
+			);
 		} catch (err) {
-			toast.error(`Something went wrong ${err}`);
-		} finally {
-			setFavoriteLoading(false);
+			toast.error("Favorite update failed");
+			console.error("Favorite toggle error:", err);
 		}
 	};
 
@@ -108,12 +110,12 @@ export default function Product(props: ItemProps) {
 			onClick={props.onClick}
 			className="p-2 w-72 flex flex-col rounded-2xl gap-y-3 shadow-md transition-transform hover:-translate-y-2 cursor-pointer"
 		>
-			{/* Image Background with Actions */}
+			{/* Image & Action Icons */}
 			<div
 				className="h-96 bg-slate-100 bg-center bg-cover rounded-2xl p-4 flex flex-col justify-between"
 				style={{ backgroundImage: `url(${props.thumbnail})` }}
 			>
-				{/* Favorite Button */}
+				{/* Favorite Icon */}
 				<div className="flex justify-end">
 					<Button onClick={toggleFavorite}>
 						{favoriteLoading ? (
@@ -121,18 +123,20 @@ export default function Product(props: ItemProps) {
 						) : (
 							<Heart
 								className={`transition-colors ${
-									favorite ? "text-red-500" : "text-gray-500"
+									isFavorite
+										? "text-red-500"
+										: "text-gray-500"
 								}`}
 								strokeWidth={2}
-								fill={favorite ? "currentColor" : "none"}
+								fill={isFavorite ? "currentColor" : "none"}
 							/>
 						)}
 					</Button>
 				</div>
 
-				{/* Bottom Row: Buy, Cart, Price */}
+				{/* Bottom Actions */}
 				<div className="flex items-center justify-between mt-auto gap-2">
-					{/* Buy Now */}
+					{/* Buy Now Button */}
 					<div
 						onClick={handleBuyNow}
 						className="group flex items-center gap-2 bg-black bg-opacity-50 px-3 py-2 rounded-full text-white text-sm transition"
@@ -145,21 +149,21 @@ export default function Product(props: ItemProps) {
 					<Button onClick={toggleCart}>
 						{cartLoading ? (
 							<Loader2 className="animate-spin text-gray-500" />
-						) : inCart ? (
+						) : isInCart ? (
 							<CheckSquare className="text-blue-500" />
 						) : (
 							<ShoppingBagIcon className="text-gray-500" />
 						)}
 					</Button>
 
-					{/* Price */}
+					{/* Price in INR */}
 					<div className="bg-black text-white px-3 py-2 rounded-full text-sm h-10 flex items-center">
-						₹{props.price}
+						{toINR(props.price)}
 					</div>
 				</div>
 			</div>
 
-			{/* Product Details */}
+			{/* Info Section */}
 			<div className="bg-gray-200 rounded-2xl p-4 h-20">
 				<h2 className="text-lg font-semibold truncate">
 					{props.title}
