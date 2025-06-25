@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/mongodb";
 import User from "@/models/User";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export async function POST(req) {
     try {
@@ -29,7 +29,7 @@ export async function POST(req) {
             name,
             email,
             password: hashedPassword,
-            photo: "", // you can store Cloudinary URL here later
+            photo: "", // You can set a photo URL later
         });
 
         return new NextResponse("User registered successfully", { status: 201 });
