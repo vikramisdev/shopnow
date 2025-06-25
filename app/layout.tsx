@@ -19,7 +19,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
 	title: "ShopNow, E-commerce",
-	description: "An E-Commerce website in Next.js",
+	description: "An E-Commerce website Built With NextAuth & Next.js",
 };
 
 export default function RootLayout({
