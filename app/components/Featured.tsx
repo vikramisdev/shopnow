@@ -61,9 +61,9 @@ export default function Featured() {
 	if (products.length === 0) return null;
 
 	return (
-		<div className="px-10 py-24">
+		<div className="px-4 sm:px-6 lg:px-10 py-24">
 			<h1 className="font-semibold text-3xl py-5 px-2">Featured</h1>
-			<div className="flex flex-wrap justify-between gap-y-12">
+			<div className="grid grid-cols-1 min-[375px]:grid-cols-2 lg:grid-cols-4 gap-6">
 				{products.map((product) => (
 					<Product
 						key={product.id}

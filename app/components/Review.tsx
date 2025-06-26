@@ -1,45 +1,27 @@
-import { AvatarIcon, StarFilledIcon } from "@radix-ui/react-icons";
-import React from "react";
+import { StarFilledIcon } from "@radix-ui/react-icons";
 
 interface ReviewProps {
-  userName?: string;
-  comment?: string;
-  rating?: number;
+	userName: string;
+	comment: string;
+	rating: number;
 }
 
-function Review({
-  userName = "Helena D.",
-  comment = "It was a good product",
-  rating = 4
-}: ReviewProps) {
-  return (
-    <div className="py-6 shadow-sm">
-      <div className="flex gap-x-2 items-center py-2">
-        <AvatarIcon className="size-10" />
-        <div>
-          <h1>{userName}</h1>
-          <div className="flex gap-x-1">
-            <StarFilledIcon
-              className={`${rating > 1 ? "text-yellow-500" : "text-gray-200"}`}
-            />
-            <StarFilledIcon
-              className={`${rating > 2 ? "text-yellow-500" : "text-gray-200"}`}
-            />
-            <StarFilledIcon
-              className={`${rating > 3 ? "text-yellow-500" : "text-gray-200"}`}
-            />
-            <StarFilledIcon
-              className={`${rating > 4 ? "text-yellow-500" : "text-gray-200"}`}
-            />
-            <StarFilledIcon
-              className={`${rating > 5 ? "text-yellow-500" : "text-gray-200"}`}
-            />
-          </div>
-        </div>
-      </div>
-      <p className="pl-12">{comment}</p>
-    </div>
-  );
-}
-
+const Review: React.FC<ReviewProps> = ({ userName, comment, rating }) => (
+	<div className="bg-gray-100 p-4 rounded-md mb-3">
+		<div className="flex items-center justify-between">
+			<h2 className="font-semibold">{userName}</h2>
+			<div className="flex">
+				{[1, 2, 3, 4, 5].map((n) => (
+					<StarFilledIcon
+						key={n}
+						className={
+							n <= rating ? "text-yellow-500" : "text-gray-300"
+						}
+					/>
+				))}
+			</div>
+		</div>
+		<p className="mt-2 text-gray-700">{comment}</p>
+	</div>
+);
 export default Review;

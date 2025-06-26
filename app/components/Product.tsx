@@ -17,13 +17,14 @@ import {
 	useGetCartQuery,
 	useGetFavoritesQuery,
 } from "@/store/services/userApi";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 interface ItemProps {
 	id: number;
 	thumbnail: string;
 	title: string;
 	description: string;
-	price: number; // USD
+	price: number;
 	category: string;
 	onClick?: () => void;
 	isInCart?: boolean;
@@ -86,8 +87,15 @@ export default function Product(props: ItemProps) {
 			await refetchCart();
 			toast.success(isInCart ? "Removed from cart" : "Added to cart");
 		} catch (err) {
-			toast.error("Cart update failed");
-			console.error("Cart toggle error:", err);
+			const error = err as FetchBaseQueryError;
+			if (error?.status === 401) {
+				toast.error("Please log in to add items to cart", {
+					id: "auth-cart",
+				});
+			} else {
+				toast.error("Cart update failed", { id: "fail-cart" });
+				console.error("Cart toggle error:", error);
+			}
 		}
 	};
 
@@ -100,22 +108,29 @@ export default function Product(props: ItemProps) {
 				isFavorite ? "Removed from favorites" : "Added to favorites"
 			);
 		} catch (err) {
-			toast.error("Favorite update failed");
-			console.error("Favorite toggle error:", err);
+			const error = err as FetchBaseQueryError;
+			if (error?.status === 401) {
+				toast.error("Please log in to update favorites", {
+					id: "auth-fav",
+				});
+			} else {
+				toast.error("Favorite update failed", { id: "fail-fav" });
+				console.error("Favorite toggle error:", error);
+			}
 		}
 	};
 
 	return (
 		<div
 			onClick={props.onClick}
-			className="p-2 w-72 flex flex-col rounded-2xl gap-y-3 shadow-md transition-transform hover:-translate-y-2 cursor-pointer"
+			className="p-2 w-full sm:w-[48%] md:w-72 flex flex-col rounded-2xl gap-y-3 shadow-md transition-transform hover:-translate-y-2 cursor-pointer"
 		>
-			{/* Image & Action Icons */}
+			{/* Image + Actions */}
 			<div
 				className="h-96 bg-slate-100 bg-center bg-cover rounded-2xl p-4 flex flex-col justify-between"
 				style={{ backgroundImage: `url(${props.thumbnail})` }}
 			>
-				{/* Favorite Icon */}
+				{/* Favorite Button */}
 				<div className="flex justify-end">
 					<Button onClick={toggleFavorite}>
 						{favoriteLoading ? (
@@ -134,31 +149,34 @@ export default function Product(props: ItemProps) {
 					</Button>
 				</div>
 
-				{/* Bottom Actions */}
-				<div className="flex items-center justify-between mt-auto gap-2">
-					{/* Buy Now Button */}
+				{/* Bottom Buttons */}
+				<div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-2 mt-auto">
+					{/* Cart & Price */}
+					<div className="flex items-center justify-between gap-2 w-full md:w-auto">
+						{/* Add to Cart */}
+						<Button onClick={toggleCart}>
+							{cartLoading ? (
+								<Loader2 className="animate-spin text-gray-500" />
+							) : isInCart ? (
+								<CheckSquare className="text-blue-500" />
+							) : (
+								<ShoppingBagIcon className="text-gray-500" />
+							)}
+						</Button>
+
+						{/* Price */}
+						<div className="bg-black text-white px-3 py-2 rounded-full text-sm h-10 flex items-center">
+							{toINR(props.price)}
+						</div>
+					</div>
+
+					{/* Buy Now */}
 					<div
 						onClick={handleBuyNow}
-						className="group flex items-center gap-2 bg-black bg-opacity-50 px-3 py-2 rounded-full text-white text-sm transition"
+						className="group flex items-center justify-center gap-2 bg-black bg-opacity-60 px-4 py-2 rounded-full text-white text-sm transition w-full md:w-auto"
 					>
 						<span>Buy Now</span>
 						<ArrowRight className="bg-white text-black h-6 w-6 p-1 rounded-full group-hover:rotate-90 transition-transform duration-500" />
-					</div>
-
-					{/* Add to Cart */}
-					<Button onClick={toggleCart}>
-						{cartLoading ? (
-							<Loader2 className="animate-spin text-gray-500" />
-						) : isInCart ? (
-							<CheckSquare className="text-blue-500" />
-						) : (
-							<ShoppingBagIcon className="text-gray-500" />
-						)}
-					</Button>
-
-					{/* Price in INR */}
-					<div className="bg-black text-white px-3 py-2 rounded-full text-sm h-10 flex items-center">
-						{toINR(props.price)}
 					</div>
 				</div>
 			</div>

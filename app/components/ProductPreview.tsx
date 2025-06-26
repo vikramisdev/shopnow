@@ -2,21 +2,29 @@
 
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import Accordian from "./Accordian";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { StarFilledIcon } from "@radix-ui/react-icons";
+import { Check, Heart } from "lucide-react";
+import { toast } from "sonner";
+
+import Accordian from "./Accordian";
 import ClothSizes from "./ClothSizes";
 import { Button } from "@/components/ui/button";
-import Review from "./Review";
-import { Check, Heart } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
+
 import {
 	useToggleCartItemMutation,
 	useToggleFavoriteMutation,
 	useGetCartQuery,
 	useGetFavoritesQuery,
+	useGetReviewsQuery,
+	useAddReviewMutation,
 } from "@/store/services/userApi";
+
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 interface ProductPreviewProps {
 	id: number;
@@ -37,54 +45,76 @@ interface UserItem {
 	category: string;
 }
 
-const ProductPreview: React.FC<ProductPreviewProps> = ({
+interface Review {
+	_id: string;
+	user:
+		| {
+				name: string;
+				image?: string;
+		  }
+		| string;
+	comment: string;
+	rating: number;
+	date: string;
+}
+
+export default function ProductPreview({
 	id,
-	thumbnail,
 	title,
 	description,
+	thumbnail,
 	price,
+	category,
 	rating,
 	brand,
-	category,
-}) => {
+}: ProductPreviewProps) {
 	const router = useRouter();
+	const { data: session } = useSession();
+
 	const [selectedSize, setSelectedSize] = useState("S");
 	const [itemInCart, setItemInCart] = useState(false);
 	const [favorite, setFavorite] = useState(false);
 	const [imageLoading, setImageLoading] = useState(true);
+	const [reviewComment, setReviewComment] = useState("");
+	const [reviewRating, setReviewRating] = useState(5);
+
+	const { data: reviews } = useGetReviewsQuery(id);
+	const [addReview, { isLoading: posting }] = useAddReviewMutation();
 
 	const { data: cartData, refetch: refetchCart } = useGetCartQuery(undefined);
 	const { data: favoritesData, refetch: refetchFavorites } =
 		useGetFavoritesQuery(undefined);
-	const [addToCart] = useToggleCartItemMutation();
-	const [toggleFavorite] = useToggleFavoriteMutation();
+	const [toggleCart, { isLoading: cartLoading }] =
+		useToggleCartItemMutation();
+	const [toggleFavorite, { isLoading: favLoading }] =
+		useToggleFavoriteMutation();
 
 	useEffect(() => {
-		if (cartData) {
-			setItemInCart(
-				cartData.some((item: UserItem) => item.productId === id)
-			);
-		}
-		if (favoritesData) {
-			setFavorite(
-				favoritesData.some((item: UserItem) => item.productId === id)
-			);
-		}
+		setItemInCart(
+			cartData?.some((i: UserItem) => i.productId === id) ?? false
+		);
+		setFavorite(
+			favoritesData?.some((i: UserItem) => i.productId === id) ?? false
+		);
 	}, [cartData, favoritesData, id]);
 
 	const handleAddToCart = async () => {
 		try {
-			await addToCart({
+			await toggleCart({
 				productId: id,
 				title,
 				price,
 				thumbnail,
 				category,
 			}).unwrap();
-			refetchCart();
+			await refetchCart();
 			toast.success(itemInCart ? "Removed from cart" : "Added to cart");
-		} catch {
-			toast.error("Cart action failed");
+		} catch (err) {
+			const msg =
+				(err as FetchBaseQueryError)?.status === 401
+					? "Please login to manage cart"
+					: "Failed to update cart";
+			toast.error(msg);
 		}
 	};
 
@@ -97,39 +127,70 @@ const ProductPreview: React.FC<ProductPreviewProps> = ({
 				thumbnail,
 				category,
 			}).unwrap();
-			refetchFavorites();
+			await refetchFavorites();
 			toast.success(
 				favorite ? "Removed from favorites" : "Added to favorites"
 			);
+		} catch (err) {
+			const msg =
+				(err as FetchBaseQueryError)?.status === 401
+					? "Please login to manage favorites"
+					: "Failed to update favorites";
+			toast.error(msg);
+		}
+	};
+
+	const handleSubmitReview = async () => {
+		if (!reviewComment.trim())
+			return toast.error("Comment cannot be empty");
+		try {
+			await addReview({
+				productId: id,
+				review: {
+					user: session?.user || {
+						name: "Anonymous",
+						image: undefined,
+					},
+					comment: reviewComment.trim(),
+					rating: reviewRating,
+				},
+			}).unwrap();
+			setReviewComment("");
+			setReviewRating(5);
+			toast.success("Review submitted!");
 		} catch {
-			toast.error("Favorite action failed");
+			toast.error("Failed to submit review");
 		}
 	};
 
 	return (
 		<div className="flex flex-wrap-reverse md:py-12">
+			{/* Info */}
 			<div className="flex-1 md:py-8 md:px-6">
 				<h1 className="md:text-8xl text-3xl font-semibold mt-6 md:mt-0">
 					{title}
 				</h1>
-				<h1 className="text-2xl pt-8 font-semibold">
+				<h2 className="text-2xl pt-8 font-semibold">
 					₹{(Number(price) * 83).toFixed(0)}
-				</h1>
+				</h2>
+
 				<ClothSizes
 					className="mt-8"
 					defaultSize={selectedSize}
-					onChange={(size) => setSelectedSize(size)}
+					onChange={setSelectedSize}
 				/>
+
 				<p className="pt-4 md:pr-36">{description}</p>
 				<p className="py-1 px-2 w-fit font-semibold bg-green-50 mt-6 text-green-950">
 					Exchange & Return Available
 				</p>
+
 				<Accordian className="my-4">
-					<h1>
+					<p>
 						<b>Brand:</b> {brand}
-					</h1>
-					<h1 className="flex items-center gap-x-2">
-						<b>Ratings:</b>
+					</p>
+					<p className="flex items-center gap-x-2">
+						<b>Ratings:</b>{" "}
 						{[1, 2, 3, 4, 5].map((n) => (
 							<StarFilledIcon
 								key={n}
@@ -139,37 +200,39 @@ const ProductPreview: React.FC<ProductPreviewProps> = ({
 										: "text-gray-300"
 								}
 							/>
-						))}
+						))}{" "}
 						{rating}
-					</h1>
+					</p>
 				</Accordian>
+
 				<Accordian title="Payment Methods" className="my-4">
-					<h1>Cash On Delivery</h1>
+					<p>Cash On Delivery</p>
 				</Accordian>
-				<div className="flex gap-x-4 pt-6">
+
+				{/* Actions */}
+				<div className="flex gap-x-4 pt-6 flex-wrap">
 					<Button
-						className="hover:text-red-600"
-						variant="secondary"
 						onClick={handleFavorite}
+						disabled={favLoading}
+						variant="secondary"
 					>
 						<Heart
-							className={`transition-colors ${
+							className={
 								favorite ? "text-red-500" : "text-gray-500"
-							}`}
+							}
 							strokeWidth={2}
 							fill={favorite ? "currentColor" : "none"}
 						/>
 					</Button>
-
 					<Button
 						onClick={handleAddToCart}
+						disabled={cartLoading}
 						variant="outline"
 						className="rounded-none flex items-center gap-x-1"
 					>
-						{itemInCart ? "ADDED TO CART" : "ADD TO CART"}
+						{itemInCart ? "ADDED TO CART" : "ADD TO CART"}{" "}
 						{itemInCart && <Check />}
 					</Button>
-
 					<Button
 						onClick={() =>
 							router.push(`/bill?category=${category}&id=${id}`)
@@ -179,33 +242,105 @@ const ProductPreview: React.FC<ProductPreviewProps> = ({
 						BUY NOW
 					</Button>
 				</div>
+
+				{/* Reviews */}
 				<div className="pt-10">
-					<h1 className="text-xl font-semibold">Reviews</h1>
-					<Review />
-					<Review />
+					<h1 className="text-xl font-semibold mb-2">Reviews</h1>
+					{reviews?.length ? (
+						<div className="space-y-4">
+							{reviews.map((r: Review) => {
+								const user =
+									typeof r.user === "string"
+										? { name: r.user }
+										: r.user;
+								return (
+									<div
+										key={r._id}
+										className="bg-gray-100 rounded-lg p-3 flex gap-3 items-start"
+									>
+										{user.image ? (
+											<Image
+												src={user.image}
+												alt={user.name}
+												width={40}
+												height={40}
+												className="rounded-full"
+											/>
+										) : (
+											<div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-sm">
+												{user.name[0]}
+											</div>
+										)}
+										<div className="flex-1">
+											<div className="flex justify-between">
+												<span className="font-medium">
+													{user.name}
+												</span>
+												<span className="text-yellow-600">
+													{r.rating} ★
+												</span>
+											</div>
+											<p className="text-sm text-gray-700 mt-1">
+												{r.comment}
+											</p>
+											<p className="text-xs text-gray-500 mt-1">
+												{new Date(
+													r.date
+												).toLocaleString()}
+											</p>
+										</div>
+									</div>
+								);
+							})}
+						</div>
+					) : (
+						<p className="text-gray-500 text-sm mb-4">
+							No reviews yet.
+						</p>
+					)}
+
+					<div className="mt-6">
+						<h2 className="font-medium mb-2">Write a review</h2>
+						<Input
+							type="number"
+							value={reviewRating}
+							min={1}
+							max={5}
+							className="mb-2"
+							onChange={(e) =>
+								setReviewRating(Number(e.target.value))
+							}
+							placeholder="Rating (1-5)"
+						/>
+						<Textarea
+							value={reviewComment}
+							onChange={(e) => setReviewComment(e.target.value)}
+							placeholder="Your comment..."
+							className="mb-2"
+						/>
+						<Button onClick={handleSubmitReview} disabled={posting}>
+							{posting ? "Submitting..." : "Submit Review"}
+						</Button>
+					</div>
 				</div>
 			</div>
 
+			{/* Product Image */}
 			<div className="relative">
 				{imageLoading && (
 					<Skeleton className="size-[500px] absolute top-0 left-0" />
 				)}
-
 				<Image
-					className={`bg-cover bg-gray-50 h-fit ${
-						imageLoading ? "opacity-0" : "opacity-100"
-					} transition-opacity duration-500`}
+					src={thumbnail}
 					height={500}
 					width={500}
 					alt="product"
-					src={thumbnail}
-					onLoadingComplete={() => {
-						setImageLoading(false);
-					}}
+					className={`bg-gray-50 transition-opacity duration-500 ${
+						imageLoading ? "opacity-0" : "opacity-100"
+					}`}
+					onLoadingComplete={() => setImageLoading(false)}
 				/>
 			</div>
 		</div>
 	);
-};
-
-export default ProductPreview;
+}

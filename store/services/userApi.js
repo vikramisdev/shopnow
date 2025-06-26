@@ -59,6 +59,20 @@ export const userApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["Orders"],
         }),
+        getReviews: builder.query({
+            query: (productId) => `/reviews/${productId}`,
+            providesTags: (result, error, id) => [{ type: "Reviews", id }],
+        }),
+        addReview: builder.mutation({
+            query: ({ productId, review }) => ({
+                url: `/reviews/${productId}`,
+                method: "POST",
+                body: review,
+            }),
+            invalidatesTags: (result, error, { productId }) => [
+                { type: "Reviews", id: productId },
+            ],
+        }),
     }),
     overrideExisting: false,
 });
@@ -72,6 +86,8 @@ export const {
     useToggleFavoriteMutation,
     useGetOrdersQuery,
     usePlaceOrderMutation,
-    useCancelOrderMutation, // <-- add this
+    useCancelOrderMutation,
+    useGetReviewsQuery,
+    useAddReviewMutation
 } = userApi;
 

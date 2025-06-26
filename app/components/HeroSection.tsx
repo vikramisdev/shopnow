@@ -14,12 +14,20 @@ const heroImages = [
 
 export default function HeroSection() {
 	const [currentIndex, setCurrentIndex] = useState(0);
+	const [isMobile, setIsMobile] = useState(false);
 
 	useEffect(() => {
 		const timer = setInterval(() => {
 			setCurrentIndex((prev) => (prev + 1) % heroImages.length);
 		}, 4000);
 		return () => clearInterval(timer);
+	}, []);
+
+	useEffect(() => {
+		const handleResize = () => setIsMobile(window.innerWidth <= 768);
+		handleResize();
+		window.addEventListener("resize", handleResize);
+		return () => window.removeEventListener("resize", handleResize);
 	}, []);
 
 	const scrollDown = () => {
@@ -72,17 +80,23 @@ export default function HeroSection() {
 			</div>
 
 			{/* Right Side - Image Carousel */}
-			<div className="flex-1 w-full md:h-[78vh] relative rounded-3xl overflow-hidden">
+			<div className="flex-1 w-full h-[60vh] md:h-[78vh] relative rounded-3xl overflow-hidden">
 				<div
-					className="h-full transition-transform duration-1000 ease-in-out"
-					style={{
-						transform: `translateY(-${currentIndex * 100}%)`,
-					}}
+					className="h-full flex flex-col transition-transform duration-1000 ease-in-out"
+					style={
+						!isMobile
+							? {
+									transform: `translateY(-${
+										currentIndex * 100
+									}%)`,
+							  }
+							: {}
+					}
 				>
 					{heroImages.map((src, index) => (
 						<div
 							key={index}
-							className="relative w-full h-[78vh] flex-shrink-0"
+							className="relative w-full h-[60vh] md:h-[78vh] flex-shrink-0"
 						>
 							<Image
 								src={src}

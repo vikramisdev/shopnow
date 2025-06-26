@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import Product from "./Product";
 import { useRouter } from "next/navigation";
@@ -26,7 +28,7 @@ const NewCollection: React.FC = () => {
 				setProducts(data.products);
 			} catch (error) {
 				console.error("Failed to fetch products:", error);
-				setProducts([]); // show empty state
+				setProducts([]); // empty fallback
 			}
 		};
 
@@ -43,9 +45,9 @@ const NewCollection: React.FC = () => {
 		);
 
 	return (
-		<div className="px-10 py-24">
+		<section className="px-4 sm:px-8 md:px-10 py-24">
 			<h1 className="font-semibold text-3xl py-5 px-2">New Collection</h1>
-			<div className="flex justify-between flex-wrap gap-y-12 gap-x-6">
+			<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 				{products.map((product) => (
 					<Product
 						key={product.id}
@@ -57,13 +59,15 @@ const NewCollection: React.FC = () => {
 						category={product.category}
 						onClick={() =>
 							router.push(
-								`/products?category=${product.category}&id=${product.id}`
+								`/products?category=${encodeURIComponent(
+									product.category
+								)}&id=${product.id}`
 							)
 						}
 					/>
 				))}
 			</div>
-		</div>
+		</section>
 	);
 };
 

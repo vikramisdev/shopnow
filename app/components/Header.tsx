@@ -36,18 +36,18 @@ const Header: React.FC<HeaderInterface> = ({ expandSearchBar = false }) => {
 	const { data: session } = useSession();
 
 	const pushToUrl = (value: string) => {
-		const searchParams = new URLSearchParams(window.location.search);
-		searchParams.set("q", value);
-		if (value) {
+		try {
+			const searchParams = new URLSearchParams(window.location.search);
+			searchParams.set("q", value);
 			router.push(`/search?${searchParams.toString()}`);
-		} else {
-			router.push("/search");
+		} catch (err) {
+			console.error("Failed to push URL:", err);
 		}
 	};
 
 	const handleLogout = async () => {
 		try {
-			signOut();
+			await signOut();
 			dispatch(logout());
 			toast.success("Logged out successfully");
 			router.push("/login");
@@ -65,25 +65,25 @@ const Header: React.FC<HeaderInterface> = ({ expandSearchBar = false }) => {
 	}, []);
 
 	return (
-		<div className="flex md:p-6 p-4 justify-between items-center fixed w-full top-0 z-10 bg-white shadow-sm">
+		<header className="flex md:p-6 p-4 justify-between items-center fixed w-full top-0 z-50 bg-white shadow-md">
 			<Logo />
 
-			{/* Actions */}
-			<div className="flex items-center gap-4 md:gap-2">
+			{/* Search & Auth Buttons */}
+			<div className="flex items-center gap-3 md:gap-4">
 				{expandSearchBar ? (
 					<input
 						ref={searchBar}
-						className="border-gray-200 border-2 rounded-full px-4 py-2 w-40 md:w-fit"
+						className="border border-gray-300 rounded-full px-4 py-2 w-40 md:w-64 focus:outline-none focus:ring focus:border-blue-500"
 						type="text"
 						placeholder="Search products"
 						autoFocus
-						onChange={(event) => pushToUrl(event.target.value)}
+						onChange={(e) => pushToUrl(e.target.value)}
 					/>
 				) : (
 					<SearchModal
 						trigger={
-							<Button>
-								<Search aria-label="Search" />
+							<Button aria-label="Search">
+								<Search />
 							</Button>
 						}
 					/>
@@ -91,17 +91,13 @@ const Header: React.FC<HeaderInterface> = ({ expandSearchBar = false }) => {
 
 				{/* Mobile Menu Icon */}
 				<div className="md:hidden">
-					{!isMenuOpen ? (
-						<MenuIcon
-							onClick={() => setMenu(true)}
-							aria-label="Open Menu"
-						/>
-					) : (
-						<X
-							onClick={() => setMenu(false)}
-							aria-label="Close Menu"
-						/>
-					)}
+					<Button
+						onClick={() => setMenu(!isMenuOpen)}
+						variant="ghost"
+						aria-label="Toggle Menu"
+					>
+						{isMenuOpen ? <X /> : <MenuIcon />}
+					</Button>
 				</div>
 
 				{/* Desktop Auth Button */}
@@ -109,16 +105,16 @@ const Header: React.FC<HeaderInterface> = ({ expandSearchBar = false }) => {
 					{session ? (
 						<DashboardModal
 							trigger={
-								<Button>
-									<UserIcon aria-label="Account" />
+								<Button aria-label="Account">
+									<UserIcon />
 								</Button>
 							}
 						/>
 					) : (
 						<LoginModal
 							trigger={
-								<Button>
-									<UserIcon aria-label="Login" />
+								<Button aria-label="Login">
+									<UserIcon />
 								</Button>
 							}
 						/>
@@ -126,121 +122,120 @@ const Header: React.FC<HeaderInterface> = ({ expandSearchBar = false }) => {
 				</div>
 			</div>
 
-			{/* Desktop Actions */}
-			<div className="md:flex gap-2 hidden">
-				<Button onClick={() => router.push("/dashboard?tab=favorites")}>
+			{/* Desktop Action Buttons */}
+			<div className="hidden md:flex gap-2">
+				<Button
+					onClick={() => router.push("/dashboard?tab=favorites")}
+					variant="ghost"
+					aria-label="Favorites"
+				>
 					<HeartIcon />
 				</Button>
-				<Button onClick={() => router.push("/dashboard?tab=cart")}>
+				<Button
+					onClick={() => router.push("/dashboard?tab=cart")}
+					variant="ghost"
+					aria-label="Cart"
+				>
 					<ShoppingBagIcon />
 				</Button>
 				{session && (
 					<Button
 						onClick={() => router.push("/dashboard?tab=orders")}
+						variant="ghost"
+						aria-label="Orders"
 					>
 						<PackageSearch />
 					</Button>
 				)}
 			</div>
 
-			{/* Mobile Dropdown Menu */}
-
-			<div
-				className={`absolute top-16 left-0 w-full bg-neutral-100 shadow-md rounded-b-2xl transition-all duration-500 overflow-hidden ${
-					isMenuOpen ? "h-fit py-6" : "h-0 py-0"
+			{/* Mobile Dropdown */}
+			<nav
+				className={`absolute top-full left-0 w-full bg-neutral-100 rounded-b-2xl overflow-hidden transition-all duration-300 shadow-md md:hidden ${
+					isMenuOpen ? "py-6" : "h-0 py-0"
 				}`}
 			>
 				<div className="flex flex-col gap-4 px-6">
-					{/* User Info */}
 					{session && (
 						<div className="flex items-center gap-3 mb-4">
 							<Image
 								src={
-									session.user?.image ||
-									"https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+									session.user?.image || "/default-avatar.png"
 								}
-								alt="User"
+								alt="User Avatar"
 								width={40}
 								height={40}
 								className="rounded-full object-cover"
 							/>
 							<div>
-								<p className="text-sm font-semibold">
+								<p className="text-sm font-semibold truncate max-w-[160px]">
 									{session.user?.name}
 								</p>
-								<p className="text-xs text-gray-500 truncate max-w-[180px]">
+								<p className="text-xs text-gray-500 truncate max-w-[160px]">
 									{session.user?.email}
 								</p>
 							</div>
 						</div>
 					)}
 
-					{/* Menu Items */}
-					{session && (
+					{session ? (
 						<>
 							<Link
 								href="/dashboard"
-								className="text-lg font-semibold"
 								onClick={() => setMenu(false)}
+								className="font-semibold"
 							>
 								Dashboard
 							</Link>
-							<hr />
 							<Link
 								href="/dashboard?tab=orders"
-								className="text-lg font-semibold"
 								onClick={() => setMenu(false)}
+								className="font-semibold"
 							>
 								Orders
 							</Link>
-							<hr />
 							<Link
 								href="/dashboard?tab=cart"
-								className="text-lg font-semibold"
 								onClick={() => setMenu(false)}
+								className="font-semibold"
 							>
 								Cart
 							</Link>
-							<hr />
 							<Link
 								href="/dashboard?tab=favorites"
-								className="text-lg font-semibold"
 								onClick={() => setMenu(false)}
+								className="font-semibold"
 							>
 								Favorites
 							</Link>
-							<hr />
 							<button
 								onClick={handleLogout}
-								className="flex items-center gap-2 text-red-600 text-lg font-semibold"
+								className="text-red-600 font-semibold text-left"
 							>
 								Logout
 							</button>
 						</>
-					)}
-
-					{!session && (
+					) : (
 						<>
 							<Link
 								href="/login"
-								className="text-lg font-semibold"
 								onClick={() => setMenu(false)}
+								className="font-semibold"
 							>
 								Login
 							</Link>
-							<hr />
 							<Link
 								href="/signup"
-								className="text-lg font-semibold"
 								onClick={() => setMenu(false)}
+								className="font-semibold"
 							>
 								Sign Up
 							</Link>
 						</>
 					)}
 				</div>
-			</div>
-		</div>
+			</nav>
+		</header>
 	);
 };
 
