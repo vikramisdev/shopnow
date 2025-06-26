@@ -1,12 +1,19 @@
 import { NextResponse } from "next/server";
 
 export async function POST() {
-    const response = NextResponse.json({ message: "Logged out" }, { status: 200 });
+    const response = new NextResponse(JSON.stringify({ message: "Logged out" }), {
+        status: 200,
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
 
-    // Remove cookie (auth_token or whatever you're using)
-    response.cookies.set("auth_token", "", {
-        httpOnly: true,
+    // Expire the cookie by setting it to empty and past date
+    response.cookies.set({
+        name: "auth_token",
+        value: "",
         expires: new Date(0),
+        httpOnly: true,
         path: "/",
     });
 

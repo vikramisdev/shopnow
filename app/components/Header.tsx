@@ -5,19 +5,24 @@ import { useRouter } from "next/navigation";
 import {
 	HeartIcon,
 	MenuIcon,
+	PackageSearch,
 	Search,
 	ShoppingBagIcon,
 	UserIcon,
 	X,
 } from "lucide-react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 
 import Logo from "./Logo";
 import Button from "./Button";
 import LoginModal from "./LoginModal";
 import DashboardModal from "./dashboard/DashboardModal";
 import SearchModal from "./SearchModal";
+import { useDispatch } from "react-redux";
+import { logout } from "@/store/slices/authSlice";
+import { toast } from "sonner";
 
 interface HeaderInterface {
 	expandSearchBar?: boolean;
@@ -25,6 +30,7 @@ interface HeaderInterface {
 
 const Header: React.FC<HeaderInterface> = ({ expandSearchBar = false }) => {
 	const router = useRouter();
+	const dispatch = useDispatch();
 	const [isMenuOpen, setMenu] = useState(false);
 	const searchBar = useRef<HTMLInputElement>(null);
 	const { data: session } = useSession();
@@ -39,6 +45,19 @@ const Header: React.FC<HeaderInterface> = ({ expandSearchBar = false }) => {
 		}
 	};
 
+	const handleLogout = async () => {
+		try {
+			signOut();
+			dispatch(logout());
+			toast.success("Logged out successfully");
+			router.push("/login");
+			setMenu(false);
+		} catch (error) {
+			console.error("Logout failed:", error);
+			toast.error("Logout failed. Try again.");
+		}
+	};
+
 	useEffect(() => {
 		const handleScroll = () => setMenu(false);
 		window.addEventListener("scroll", handleScroll);
@@ -46,9 +65,10 @@ const Header: React.FC<HeaderInterface> = ({ expandSearchBar = false }) => {
 	}, []);
 
 	return (
-		<div className="flex md:p-6 p-4 justify-between items-center fixed w-full top-0 z-10 bg-white">
+		<div className="flex md:p-6 p-4 justify-between items-center fixed w-full top-0 z-10 bg-white shadow-sm">
 			<Logo />
 
+			{/* Actions */}
 			<div className="flex items-center gap-4 md:gap-2">
 				{expandSearchBar ? (
 					<input
@@ -73,20 +93,18 @@ const Header: React.FC<HeaderInterface> = ({ expandSearchBar = false }) => {
 				<div className="md:hidden">
 					{!isMenuOpen ? (
 						<MenuIcon
-							className="transition-all duration-500"
 							onClick={() => setMenu(true)}
 							aria-label="Open Menu"
 						/>
 					) : (
 						<X
-							className="transition-all duration-500"
 							onClick={() => setMenu(false)}
 							aria-label="Close Menu"
 						/>
 					)}
 				</div>
 
-				{/* Auth Button - Desktop */}
+				{/* Desktop Auth Button */}
 				<div className="hidden md:block">
 					{session ? (
 						<DashboardModal
@@ -111,67 +129,113 @@ const Header: React.FC<HeaderInterface> = ({ expandSearchBar = false }) => {
 			{/* Desktop Actions */}
 			<div className="md:flex gap-2 hidden">
 				<Button onClick={() => router.push("/dashboard?tab=favorites")}>
-					<HeartIcon aria-label="Favorites" />
+					<HeartIcon />
 				</Button>
 				<Button onClick={() => router.push("/dashboard?tab=cart")}>
-					<ShoppingBagIcon aria-label="Cart" />
+					<ShoppingBagIcon />
 				</Button>
 				{session && (
 					<Button
 						onClick={() => router.push("/dashboard?tab=orders")}
 					>
-						{/* Simple custom Orders icon (you can replace if needed) */}
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							className="w-5 h-5"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							strokeWidth={2}
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								d="M9 17v-6h6v6m-6 4h6a2 2 0 002-2v-6a2 2 0 00-2-2h-1V7a3 3 0 00-6 0v4H9a2 2 0 00-2 2v6a2 2 0 002 2z"
-							/>
-						</svg>
+						<PackageSearch />
 					</Button>
 				)}
 			</div>
 
 			{/* Mobile Dropdown Menu */}
+
 			<div
-				className={`absolute top-16 left-0 w-screen bg-neutral-100 shadow-sm rounded-b-2xl transition-all duration-500 overflow-hidden ${
-					isMenuOpen ? "h-80" : "h-0"
+				className={`absolute top-16 left-0 w-full bg-neutral-100 shadow-md rounded-b-2xl transition-all duration-500 overflow-hidden ${
+					isMenuOpen ? "h-fit py-6" : "h-0 py-0"
 				}`}
 			>
-				<div className="flex flex-col gap-4 px-6 py-8">
-					{["Home", "Cart", "Favorite"].map((item, index) => (
-						<React.Fragment key={index}>
-							<Link
-								className="text-lg font-semibold"
-								href={
-									item === "Cart"
-										? "/dashboard?tab=cart"
-										: item === "Favorite"
-										? "/dashboard?tab=favorites"
-										: "/"
+				<div className="flex flex-col gap-4 px-6">
+					{/* User Info */}
+					{session && (
+						<div className="flex items-center gap-3 mb-4">
+							<Image
+								src={
+									session.user?.image ||
+									"https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 								}
-							>
-								{item}
-							</Link>
-							<hr />
-						</React.Fragment>
-					))}
+								alt="User"
+								width={40}
+								height={40}
+								className="rounded-full object-cover"
+							/>
+							<div>
+								<p className="text-sm font-semibold">
+									{session.user?.name}
+								</p>
+								<p className="text-xs text-gray-500 truncate max-w-[180px]">
+									{session.user?.email}
+								</p>
+							</div>
+						</div>
+					)}
+
+					{/* Menu Items */}
 					{session && (
 						<>
 							<Link
+								href="/dashboard"
 								className="text-lg font-semibold"
+								onClick={() => setMenu(false)}
+							>
+								Dashboard
+							</Link>
+							<hr />
+							<Link
 								href="/dashboard?tab=orders"
+								className="text-lg font-semibold"
+								onClick={() => setMenu(false)}
 							>
 								Orders
 							</Link>
 							<hr />
+							<Link
+								href="/dashboard?tab=cart"
+								className="text-lg font-semibold"
+								onClick={() => setMenu(false)}
+							>
+								Cart
+							</Link>
+							<hr />
+							<Link
+								href="/dashboard?tab=favorites"
+								className="text-lg font-semibold"
+								onClick={() => setMenu(false)}
+							>
+								Favorites
+							</Link>
+							<hr />
+							<button
+								onClick={handleLogout}
+								className="flex items-center gap-2 text-red-600 text-lg font-semibold"
+							>
+								Logout
+							</button>
+						</>
+					)}
+
+					{!session && (
+						<>
+							<Link
+								href="/login"
+								className="text-lg font-semibold"
+								onClick={() => setMenu(false)}
+							>
+								Login
+							</Link>
+							<hr />
+							<Link
+								href="/signup"
+								className="text-lg font-semibold"
+								onClick={() => setMenu(false)}
+							>
+								Sign Up
+							</Link>
 						</>
 					)}
 				</div>

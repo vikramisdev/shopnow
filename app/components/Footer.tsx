@@ -7,111 +7,98 @@ import {
 import Logo from "./Logo";
 
 export default function Footer() {
-  return (
-    <div className="bg-gray-950 mt-10 text-white py-14 px-12">
-      <div className="flex flex-col md:flex-row md:justify-between py-12 gap-y-12">
-        {/* Logo */}
-        <div>
-          <div className="flex flex-col">
-            <Logo />
-          </div>
-        </div>
+	return (
+		<footer className="bg-gray-950 text-white px-6 md:px-12 py-16 mt-10">
+			<div className="flex flex-col md:flex-row md:justify-between gap-12 md:gap-6">
+				{/* Logo */}
+				<div>
+					<Logo />
+					<p className="text-sm text-gray-400 mt-4 max-w-xs">
+						Shop smarter with ShopNow – your trusted marketplace for
+						all things awesome.
+					</p>
+				</div>
 
-        {/* company */}
-        <div>
-          <h1 className="md:text-xl md:mb-12 mb-6 font-semibold">Company</h1>
-          <div className="flex flex-col gap-y-6">
-            <Link className="font-normal" href={"/"}>
-              Projects
-            </Link>
-            <Link className="font-normal" href={"/"}>
-              Blog
-            </Link>
-          </div>
-        </div>
+				{/* Columns */}
+				<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 w-full">
+					{/* Column Template */}
+					<FooterColumn
+						title="Company"
+						links={["Projects", "Blog"]}
+					/>
+					<FooterColumn
+						title="About"
+						links={[
+							"ShopNow, Inc.",
+							"Policies",
+							"Investors",
+							"Careers",
+						]}
+					/>
+					<FooterColumn
+						title="Shop"
+						links={["Gift Cards", "Blog", "Projects"]}
+					/>
+					<FooterColumn
+						title="Sell"
+						links={[
+							"Sell on ShopNow",
+							"Teams",
+							"Forums",
+							"Affiliates & Creators",
+						]}
+					/>
+					<FooterColumn
+						title="Help"
+						links={["Help Center", "Privacy Settings"]}
+					/>
+				</div>
+			</div>
 
-        {/* about */}
-        <div>
-          <h1 className="md:text-xl md:mb-12 mb-6 font-semibold">About</h1>
-          <div className="flex flex-col gap-y-6">
-            <Link className="font-normal" href={"/about"}>
-              ShopNow, Inc.
-            </Link>
-            <Link className="font-normal" href={"/"}>
-              Policies
-            </Link>
-            <Link className="font-normal" href={"/"}>
-              Investors
-            </Link>
-            <Link className="font-normal" href={"/"}>
-              Careers
-            </Link>
-          </div>
-        </div>
+			<hr className="opacity-20 my-8" />
 
-        {/* shop */}
-        <div>
-          <h1 className="md:text-xl md:mb-12 mb-6 font-semibold">Shop</h1>
-          <div className="flex flex-col gap-y-6">
-            <Link className="font-normal" href={"/"}>
-              Gift Cards
-            </Link>
-            <Link className="font-normal" href={"/"}>
-              Blog
-            </Link>
-            <Link className="font-normal" href={"/"}>
-              Projects
-            </Link>
-            <Link className="font-normal" href={"/"}>
-              Projects
-            </Link>
-          </div>
-        </div>
+			<div className="flex flex-col md:flex-row items-center justify-between gap-4">
+				<p className="text-sm text-gray-400">
+					© 2023–2025 ShopNow. All rights reserved.
+				</p>
+				<div className="flex gap-4">
+					<SocialIcon
+						icon={<InstagramLogoIcon className="h-5 w-5" />}
+					/>
+					<SocialIcon
+						icon={<TwitterLogoIcon className="h-5 w-5" />}
+					/>
+					<SocialIcon icon={<GitHubLogoIcon className="h-5 w-5" />} />
+				</div>
+			</div>
+		</footer>
+	);
+}
 
-        {/* sell */}
-        <div>
-          <h1 className="md:text-xl md:mb-12 mb-6 font-semibold">Sell</h1>
-          <div className="flex flex-col gap-y-6">
-            <Link className="font-normal" href={"/"}>
-              Sell on ShopNow
-            </Link>
-            <Link className="font-normal" href={"/"}>
-              Teams
-            </Link>
-            <Link className="font-normal" href={"/"}>
-              Forums
-            </Link>
-            <Link className="font-normal" href={"/"}>
-              Affiliates & Creators
-            </Link>
-          </div>
-        </div>
+function FooterColumn({ title, links }: { title: string; links: string[] }) {
+	return (
+		<div>
+			<h2 className="text-lg font-semibold mb-4">{title}</h2>
+			<ul className="flex flex-col gap-3 text-sm text-gray-300">
+				{links.map((text, idx) => (
+					<li key={idx}>
+						<Link
+							href="/"
+							className="hover:underline hover:text-white transition-colors"
+						>
+							{text}
+						</Link>
+					</li>
+				))}
+			</ul>
+		</div>
+	);
+}
 
-        {/* Help */}
-        <div>
-          <h1 className="md:text-xl md:mb-12 mb-6 font-semibold">Help</h1>
-          <div className="flex flex-col gap-y-6">
-            <Link className="font-normal" href={"/"}>
-              Help Center
-            </Link>
-            <Link className="font-normal" href={"/"}>
-              Privacy Settings
-            </Link>
-          </div>
-        </div>
-      </div>
-      <hr className="opacity-30"></hr>
-      <div className="flex items-center justify-between py-6">
-        <h2 className="font-semibold">
-          © 2023-2024 ShopNow, All Rights Reserved
-        </h2>
-
-        <div className="flex gap-6">
-          <InstagramLogoIcon className="cursor-pointer h-5 w-5" />
-          <TwitterLogoIcon className="cursor-pointer h-5 w-5" />
-          <GitHubLogoIcon className="cursor-pointer h-5 w-5" />
-        </div>
-      </div>
-    </div>
-  );
+function SocialIcon({ icon }: { icon: React.ReactNode }) {
+	return (
+		<div className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer">
+			{icon}
+		</div>
+	);
 }

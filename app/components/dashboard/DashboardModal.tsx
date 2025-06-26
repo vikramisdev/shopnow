@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LogOut } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { signOut } from "next-auth/react";
 
 interface DashboardModalProps {
 	trigger: React.ReactNode;
@@ -31,8 +32,8 @@ export default function DashboardModal({ trigger }: DashboardModalProps) {
 	const handleLogout = async () => {
 		setLoading(true);
 		try {
-			await fetch("/api/logout", { method: "POST" });
-			dispatch(logout());
+			signOut();
+			dispatch(logout()); // redux action
 			toast.success("Logged out successfully");
 			router.push("/login");
 		} catch (error) {
