@@ -7,7 +7,7 @@ const ReviewSchema = new mongoose.Schema({
 	},
 	user: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: "User", // This refers to your User model
+		ref: "User",
 		required: true,
 	},
 	comment: {
@@ -16,9 +16,9 @@ const ReviewSchema = new mongoose.Schema({
 	},
 	rating: {
 		type: Number,
-		required: true,
 		min: 1,
 		max: 5,
+		required: true,
 	},
 	date: {
 		type: Date,

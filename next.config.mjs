@@ -9,7 +9,8 @@ const nextConfig = {
       'i.pinimg.com',
       'image.freepik.com',
       'images.pexels.com',
-      'images.unsplash.com', // lowercase i
+      'images.unsplash.com',
+      'cdn.pixabay.com'
     ]
   },
 };

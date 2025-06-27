@@ -47,12 +47,7 @@ interface UserItem {
 
 interface Review {
 	_id: string;
-	user:
-		| {
-				name: string;
-				image?: string;
-		  }
-		| string;
+	user: { name: string; image?: string } | string;
 	comment: string;
 	rating: number;
 	date: string;
@@ -78,7 +73,7 @@ export default function ProductPreview({
 	const [reviewComment, setReviewComment] = useState("");
 	const [reviewRating, setReviewRating] = useState(5);
 
-	const { data: reviews } = useGetReviewsQuery(id);
+	const { data: reviews, isFetching } = useGetReviewsQuery(id);
 	const [addReview, { isLoading: posting }] = useAddReviewMutation();
 
 	const { data: cartData, refetch: refetchCart } = useGetCartQuery(undefined);
@@ -141,20 +136,33 @@ export default function ProductPreview({
 	};
 
 	const handleSubmitReview = async () => {
-		if (!reviewComment.trim())
-			return toast.error("Comment cannot be empty");
+		if (!reviewComment.trim()) {
+			toast.error("Comment cannot be empty");
+			return;
+		}
+
+		const user = session?.user as {
+			id: string;
+			name: string;
+			email: string;
+			image?: string;
+		};
+
+		if (!user?.id) {
+			toast.error("You must be logged in to submit a review.");
+			return;
+		}
+
 		try {
 			await addReview({
 				productId: id,
 				review: {
-					user: session?.user || {
-						name: "Anonymous",
-						image: undefined,
-					},
+					user: user.id,
 					comment: reviewComment.trim(),
 					rating: reviewRating,
 				},
 			}).unwrap();
+
 			setReviewComment("");
 			setReviewRating(5);
 			toast.success("Review submitted!");
@@ -246,7 +254,26 @@ export default function ProductPreview({
 				{/* Reviews */}
 				<div className="pt-10">
 					<h1 className="text-xl font-semibold mb-2">Reviews</h1>
-					{reviews?.length ? (
+
+					{isFetching ? (
+						<div className="space-y-4">
+							{Array(3)
+								.fill(0)
+								.map((_, idx) => (
+									<div
+										key={idx}
+										className="bg-gray-100 rounded-lg p-3 flex gap-3 items-start"
+									>
+										<Skeleton className="w-10 h-10 rounded-full" />
+										<div className="flex-1 space-y-2">
+											<Skeleton className="w-1/3 h-4" />
+											<Skeleton className="w-full h-4" />
+											<Skeleton className="w-1/4 h-3" />
+										</div>
+									</div>
+								))}
+						</div>
+					) : reviews?.length ? (
 						<div className="space-y-4">
 							{reviews.map((r: Review) => {
 								const user =
@@ -258,7 +285,7 @@ export default function ProductPreview({
 										key={r._id}
 										className="bg-gray-100 rounded-lg p-3 flex gap-3 items-start"
 									>
-										{user.image ? (
+										{user?.image ? (
 											<Image
 												src={user.image}
 												alt={user.name}
@@ -268,13 +295,13 @@ export default function ProductPreview({
 											/>
 										) : (
 											<div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-sm">
-												{user.name[0]}
+												{user?.name[0]}
 											</div>
 										)}
 										<div className="flex-1">
 											<div className="flex justify-between">
 												<span className="font-medium">
-													{user.name}
+													{user?.name}
 												</span>
 												<span className="text-yellow-600">
 													{r.rating} ★
@@ -299,6 +326,7 @@ export default function ProductPreview({
 						</p>
 					)}
 
+					{/* Write Review */}
 					<div className="mt-6">
 						<h2 className="font-medium mb-2">Write a review</h2>
 						<Input

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import React from "react";
 
 const brands = [
 	{ name: "Bata", logo: "https://static.cdnlogo.com/logos/b/58/bata.svg" },
@@ -40,33 +41,43 @@ const brands = [
 ];
 
 export default function BrandsMarquee() {
-	const fullBrands = [...brands, ...brands]; // loop effect
+	const fullBrands = [...brands, ...brands]; // to loop seamlessly
 
 	return (
-		<section className="relative py-14 bg-white dark:bg-neutral-900 border-y border-gray-200 dark:border-neutral-800 overflow-hidden">
+		<section className="relative py-16 bg-gradient-to-b from-white via-gray-50 to-white dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 overflow-hidden border-b">
 			<div className="max-w-screen-xl mx-auto px-4">
-				<h2 className="text-center text-xl font-semibold text-gray-800 dark:text-white mb-10">
-					Trusted by the Best Brands
+				<h2
+					className="text-center text-[0.75rem] md:text-[20px] font-light text-gray-800 dark:text-white mb-8 tracking-wide"
+					style={{ fontFamily: `"Poppins", sans-serif` }}
+				>
+					Trusted by the <span className="text-blue-600">brands</span>{" "}
+					you love
 				</h2>
 
-				{/* Marquee container */}
+				{/* Marquee Container */}
 				<div className="overflow-hidden relative">
-					<div className="flex w-max gap-12 animate-marquee hover:[animation-play-state:paused]">
+					<div className="absolute top-0 left-0 h-full w-12 bg-gradient-to-r from-white to-transparent dark:from-neutral-900 pointer-events-none z-10" />
+					<div className="absolute top-0 right-0 h-full w-12 bg-gradient-to-l from-white to-transparent dark:from-neutral-900 pointer-events-none z-10" />
+
+					<div className="flex w-max gap-12 animate-marquee whitespace-nowrap hover:[animation-play-state:paused]">
 						{fullBrands.map((brand, i) => (
 							<div
 								key={`${brand.name}-${i}`}
-								className="w-32 h-20 px-4 flex items-center justify-center transition-transform duration-300 ease-in-out hover:scale-125"
+								className="w-28 md:w-32 h-20 px-2 md:px-4 flex items-center justify-center transition-transform duration-300 ease-in-out hover:scale-110"
 								style={{ flexShrink: 0 }}
+								title={brand.name}
+								aria-label={brand.name}
+								role="img"
 							>
 								<Image
 									src={brand.logo}
 									alt={brand.name}
-									width={160}
+									width={140}
 									height={60}
-									className="object-contain h-full w-full dark:invert"
+									className="object-contain h-full w-full dark:invert grayscale hover:grayscale-0"
 									onError={(e) => {
 										e.currentTarget.src =
-											"https://images.unsplash.com/photo-1532003885409-ed84d334f6cc?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0";
+											"https://images.unsplash.com/photo-1532003885409-ed84d334f6cc?q=80&w=1170";
 									}}
 								/>
 							</div>
@@ -75,12 +86,7 @@ export default function BrandsMarquee() {
 				</div>
 			</div>
 
-			{/* Marquee keyframes */}
 			<style jsx>{`
-				.animate-marquee {
-					animation: marquee 25s linear infinite;
-				}
-
 				@keyframes marquee {
 					0% {
 						transform: translateX(0%);
@@ -88,6 +94,9 @@ export default function BrandsMarquee() {
 					100% {
 						transform: translateX(-50%);
 					}
+				}
+				.animate-marquee {
+					animation: marquee 25s linear infinite;
 				}
 			`}</style>
 		</section>

@@ -1,37 +1,38 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 
 const seasons = [
 	{
 		name: "Summer",
 		months: [3, 4, 5],
-		title: "🔥 Summer Sale",
-		subtitle: "Flat 50% OFF on Everything",
+		title: "Summer Collection '25",
+		subtitle: "Breathe light. Move bold. Up to 50% Off.",
 		coupon: "SUMMER50",
-		bgColor: "bg-yellow-200",
-		textColor: "text-yellow-800",
-		emoji: "🍉",
+		bgColor: "bg-white",
+		textColor: "text-neutral-900",
+		image: "https://images.unsplash.com/photo-1468413253725-0d5181091126?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 	},
 	{
 		name: "Monsoon",
 		months: [6, 7, 8, 9, 10],
-		title: "🌧️ Monsoon Madness",
-		subtitle: "Up to 40% OFF on Selected Items",
+		title: "Monsoon '25 Drops",
+		subtitle: "Waterproof gear. Effortless style. 40% Off.",
 		coupon: "RAINY40",
-		bgColor: "bg-cyan-200",
-		textColor: "text-cyan-800",
-		emoji: "☔",
+		bgColor: "bg-white",
+		textColor: "text-neutral-900",
+		image: "https://images.unsplash.com/photo-1739372679830-401df26f1974?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 	},
 	{
 		name: "Winter",
 		months: [11, 12, 1, 2],
-		title: "❄️ Winter Blowout",
-		subtitle: "Flat 30% OFF on Jackets & More",
+		title: "Winter Essentials '25",
+		subtitle: "Warmth meets elegance. Flat 30% Off.",
 		coupon: "COZY30",
-		bgColor: "bg-orange-200",
-		textColor: "text-orange-800",
-		emoji: "🧣",
+		bgColor: "bg-white",
+		textColor: "text-neutral-900",
+		image: "https://plus.unsplash.com/premium_photo-1673286712645-9600beaa4a92?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 	},
 ];
 
@@ -39,7 +40,7 @@ export default function SeasonSale() {
 	const month = new Date().getMonth() + 1;
 	const season = seasons.find((s) => s.months.includes(month)) || seasons[0];
 
-	const [time, setTime] = useState(86400); // 24h countdown
+	const [time, setTime] = useState(86400); // 24hr countdown
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -54,46 +55,37 @@ export default function SeasonSale() {
 
 	return (
 		<section
-			id="sale-section"
-			className={`${season.bgColor} w-full min-h-[70vh] flex flex-col-reverse md:flex-row items-center justify-between`}
+			className={`${season.bgColor} text-black w-full grid grid-cols-1 md:grid-cols-2 min-h-[70vh]`}
 		>
-			{/* Text Section */}
-			<div className="w-full md:w-1/2 px-6 py-10 md:p-20 flex flex-col justify-center gap-4">
+			{/* Text Block */}
+			<div className="flex flex-col justify-center px-6 py-14 md:px-16 gap-4">
 				<h1
-					className={`text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight leading-tight ${season.textColor}`}
+					className={`text-3xl md:text-4xl font-bold ${season.textColor}`}
 				>
 					{season.title}
 				</h1>
-
-				<p className="text-base sm:text-lg md:text-xl font-medium text-neutral-800">
+				<p className="text-base md:text-lg text-neutral-700">
 					{season.subtitle}
 				</p>
 
-				<div className="mt-2 text-sm sm:text-base font-semibold tracking-wide">
-					<span className="bg-white px-3 py-1 rounded-full shadow-sm text-black">
-						{season.coupon}
-					</span>
-				</div>
+				<span className="inline-block bg-black text-white w-max px-4 py-1 rounded-full tracking-widest text-sm font-semibold">
+					{season.coupon}
+				</span>
 
-				<div className="flex flex-wrap gap-4 mt-6">
-					<button className="bg-black text-white px-6 py-3 rounded-full text-sm uppercase tracking-wider hover:opacity-90 transition">
-						Start Shopping
-					</button>
-					<button className="bg-white text-black px-6 py-3 rounded-full text-sm uppercase tracking-wider border border-black hover:bg-black hover:text-white transition">
-						View Offers
-					</button>
-				</div>
-
-				<div className="text-xs font-mono mt-6 text-neutral-700">
+				<p className="text-xs text-neutral-500 font-mono mt-4">
 					Sale ends in: {h}:{m}:{s}
-				</div>
+				</p>
 			</div>
 
-			{/* Emoji Section */}
-			<div className="w-full md:w-1/2 flex justify-center items-center py-10 md:py-0">
-				<div className="text-[6rem] sm:text-[8rem] md:text-[10rem] leading-none">
-					{season.emoji}
-				</div>
+			{/* Image Block */}
+			<div className="relative w-full h-[300px] md:h-auto">
+				<Image
+					src={season.image}
+					alt={season.name}
+					fill
+					className="object-cover"
+					priority
+				/>
 			</div>
 		</section>
 	);

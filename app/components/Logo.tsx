@@ -12,9 +12,7 @@ export default function Logo() {
 				width={200}
 				alt="logo"
 			/>
-			<h1 className="md:text-xl font-semibold text-white bg-black pl-4 py-2 pr-6 rounded-md">
-				Shop Now
-			</h1>
+			<h1 className="md:text-xl font-bold">Shop Now</h1>
 		</Link>
   );
 }

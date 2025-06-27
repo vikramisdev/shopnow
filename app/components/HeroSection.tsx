@@ -39,7 +39,7 @@ export default function HeroSection() {
 	return (
 		<section
 			id="hero-section"
-			className="flex flex-col-reverse md:flex-row items-center justify-between w-full px-6 md:px-20 py-28 gap-10 bg-white"
+			className="flex flex-col-reverse md:flex-row items-center justify-between w-full px-6 md:px-20 py-5 gap-10 bg-white"
 		>
 			{/* Left Side - Text */}
 			<div className="flex-1 flex flex-col gap-6 text-center md:text-left z-10">
@@ -80,7 +80,7 @@ export default function HeroSection() {
 			</div>
 
 			{/* Right Side - Image Carousel */}
-			<div className="flex-1 w-full h-[60vh] md:h-[78vh] relative rounded-3xl overflow-hidden">
+			<div className="flex-1 w-full h-[60vh] md:h-[70vh] relative rounded-3xl overflow-hidden">
 				<div
 					className="h-full flex flex-col transition-transform duration-1000 ease-in-out"
 					style={
@@ -96,7 +96,7 @@ export default function HeroSection() {
 					{heroImages.map((src, index) => (
 						<div
 							key={index}
-							className="relative w-full h-[60vh] md:h-[78vh] flex-shrink-0"
+							className="relative w-full h-[60vh] md:h-[70vh] flex-shrink-0"
 						>
 							<Image
 								src={src}
