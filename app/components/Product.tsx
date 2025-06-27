@@ -18,6 +18,7 @@ import {
 	useGetFavoritesQuery,
 } from "@/store/services/userApi";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import USDToINR from "../utils/USDToINR";
 
 interface ItemProps {
 	id: number;
@@ -38,11 +39,6 @@ interface UserItem {
 	thumbnail: string;
 	category: string;
 }
-
-const toINR = (usd: number) => {
-	const rate = 83;
-	return `₹${Math.round(usd * rate).toLocaleString("en-IN")}`;
-};
 
 export default function Product(props: ItemProps) {
 	const router = useRouter();
@@ -123,24 +119,24 @@ export default function Product(props: ItemProps) {
 	return (
 		<div
 			onClick={props.onClick}
-			className="p-2 w-full sm:w-[48%] md:w-72 flex flex-col rounded-2xl gap-y-3 shadow-md transition-transform hover:-translate-y-2 cursor-pointer"
+			className="p-2 w-full sm:w-[48%] md:w-72 flex flex-col rounded-2xl gap-y-3 shadow-md transition-transform hover:-translate-y-2 cursor-pointer bg-white dark:bg-neutral-900"
 		>
 			{/* Image + Actions */}
 			<div
-				className="h-96 bg-slate-100 bg-center bg-cover rounded-2xl p-4 flex flex-col justify-between"
+				className="h-96 bg-slate-100 dark:bg-neutral-800 bg-center bg-cover rounded-2xl p-4 flex flex-col justify-between"
 				style={{ backgroundImage: `url(${props.thumbnail})` }}
 			>
 				{/* Favorite Button */}
 				<div className="flex justify-end">
 					<Button onClick={toggleFavorite}>
 						{favoriteLoading ? (
-							<Loader2 className="animate-spin text-gray-500" />
+							<Loader2 className="animate-spin text-gray-500 dark:text-gray-300" />
 						) : (
 							<Heart
 								className={`transition-colors ${
 									isFavorite
 										? "text-red-500"
-										: "text-gray-500"
+										: "text-gray-500 dark:text-gray-300"
 								}`}
 								strokeWidth={2}
 								fill={isFavorite ? "currentColor" : "none"}
@@ -156,37 +152,37 @@ export default function Product(props: ItemProps) {
 						{/* Add to Cart */}
 						<Button onClick={toggleCart}>
 							{cartLoading ? (
-								<Loader2 className="animate-spin text-gray-500" />
+								<Loader2 className="animate-spin text-gray-500 dark:text-gray-300" />
 							) : isInCart ? (
 								<CheckSquare className="text-blue-500" />
 							) : (
-								<ShoppingBagIcon className="text-gray-500" />
+								<ShoppingBagIcon className="text-gray-500 dark:text-gray-300" />
 							)}
 						</Button>
 
 						{/* Price */}
-						<div className="bg-black text-white px-3 py-2 rounded-full text-sm h-10 flex items-center">
-							{toINR(props.price)}
+						<div className="bg-black text-white dark:bg-white dark:text-black px-3 py-2 rounded-full text-sm h-10 flex items-center">
+							{USDToINR(props.price)}
 						</div>
 					</div>
 
 					{/* Buy Now */}
 					<div
 						onClick={handleBuyNow}
-						className="group flex items-center justify-center gap-2 bg-black bg-opacity-60 px-4 py-2 rounded-full text-white text-sm transition w-full md:w-auto"
+						className="group flex items-center justify-center gap-2 bg-black bg-opacity-60 dark:bg-white dark:bg-opacity-80 px-4 py-2 rounded-full text-white dark:text-black text-sm transition w-full md:w-auto"
 					>
 						<span>Buy Now</span>
-						<ArrowRight className="bg-white text-black h-6 w-6 p-1 rounded-full group-hover:rotate-90 transition-transform duration-500" />
+						<ArrowRight className="bg-white text-black dark:bg-black dark:text-white h-6 w-6 p-1 rounded-full group-hover:rotate-90 transition-transform duration-500" />
 					</div>
 				</div>
 			</div>
 
 			{/* Info Section */}
-			<div className="bg-gray-200 rounded-2xl p-4 h-20">
-				<h2 className="text-lg font-semibold truncate">
+			<div className="bg-gray-200 dark:bg-neutral-800 rounded-2xl p-4 h-20">
+				<h2 className="text-lg font-semibold text-black dark:text-white truncate">
 					{props.title}
 				</h2>
-				<p className="text-sm text-gray-700 truncate">
+				<p className="text-sm text-gray-700 dark:text-neutral-300 truncate">
 					{props.description}
 				</p>
 			</div>

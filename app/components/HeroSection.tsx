@@ -39,29 +39,29 @@ export default function HeroSection() {
 	return (
 		<section
 			id="hero-section"
-			className="flex flex-col-reverse md:flex-row items-center justify-between w-full px-6 md:px-20 py-5 gap-10 bg-white"
+			className="flex flex-col-reverse md:flex-row items-center justify-between w-full px-6 md:px-20 py-5 gap-10 bg-white dark:bg-black transition-colors"
 		>
 			{/* Left Side - Text */}
 			<div className="flex-1 flex flex-col gap-6 text-center md:text-left z-10">
 				<div className="space-y-2">
-					<h2 className="text-xs uppercase tracking-widest text-zinc-600">
+					<h2 className="text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
 						Exclusive Offer
 					</h2>
-					<h1 className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight text-zinc-900">
-						<span className="inline-block px-2 py-1 bg-yellow-200 rounded-md">
+					<h1 className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight text-zinc-900 dark:text-white">
+						<span className="inline-block px-2 py-1 dark:text-black bg-yellow-200 rounded-md">
 							Style
 						</span>{" "}
 						Meets <br />
-						<span className="inline-block px-2 py-1 bg-zinc-900 text-white rounded-md">
+						<span className="inline-block px-2 py-1 bg-zinc-900 text-white rounded-md dark:bg-white dark:text-black">
 							Comfort
 						</span>
 					</h1>
 				</div>
 
-				<p className="text-base md:text-lg text-zinc-700 max-w-xl mx-auto md:mx-0 leading-relaxed">
+				<p className="text-base md:text-lg text-zinc-700 dark:text-zinc-300 max-w-xl mx-auto md:mx-0 leading-relaxed">
 					Handpicked fashion, curated collections, & massive
 					discounts—
-					<span className="font-semibold text-black">
+					<span className="font-semibold text-black dark:text-white">
 						{" "}
 						all in one place
 					</span>
@@ -71,7 +71,7 @@ export default function HeroSection() {
 				<div className="mt-4 flex justify-center md:justify-start">
 					<button
 						onClick={scrollDown}
-						className="group inline-flex items-center gap-2 bg-black text-white px-6 py-3 text-sm font-semibold rounded-full uppercase hover:bg-zinc-800 transition"
+						className="group inline-flex items-center gap-2 bg-black text-white px-6 py-3 text-sm font-semibold rounded-full uppercase hover:bg-zinc-800 dark:hover:bg-zinc-700 transition"
 					>
 						Start Shopping
 						<ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -80,7 +80,7 @@ export default function HeroSection() {
 			</div>
 
 			{/* Right Side - Image Carousel */}
-			<div className="flex-1 w-full h-[60vh] md:h-[70vh] relative rounded-3xl overflow-hidden">
+			<div className="flex-1 w-full h-[60vh] md:h-[70vh] relative rounded-3xl overflow-hidden shadow-lg">
 				<div
 					className="h-full flex flex-col transition-transform duration-1000 ease-in-out"
 					style={

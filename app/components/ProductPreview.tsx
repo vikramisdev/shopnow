@@ -5,8 +5,9 @@ import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { StarFilledIcon } from "@radix-ui/react-icons";
-import { Check, Heart } from "lucide-react";
+import { Check, Heart, Loader, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 import Accordian from "./Accordian";
 import ClothSizes from "./ClothSizes";
@@ -52,6 +53,22 @@ interface Review {
 	rating: number;
 	date: string;
 }
+
+const isClothingCategory = (category?: string) => {
+	if (!category) return false;
+	const clothKeywords = [
+		"shirt",
+		"pant",
+		"jean",
+		"jacket",
+		"t-shirt",
+		"kurta",
+		"dress",
+	];
+	return clothKeywords.some((keyword) =>
+		category.toLowerCase().includes(keyword)
+	);
+};
 
 export default function ProductPreview({
 	id,
@@ -182,11 +199,13 @@ export default function ProductPreview({
 					₹{(Number(price) * 83).toFixed(0)}
 				</h2>
 
-				<ClothSizes
-					className="mt-8"
-					defaultSize={selectedSize}
-					onChange={setSelectedSize}
-				/>
+				{isClothingCategory(category) && (
+					<ClothSizes
+						className="mt-8"
+						defaultSize={selectedSize}
+						onChange={setSelectedSize}
+					/>
+				)}
 
 				<p className="pt-4 md:pr-36">{description}</p>
 				<p className="py-1 px-2 w-fit font-semibold bg-green-50 mt-6 text-green-950">
@@ -222,25 +241,52 @@ export default function ProductPreview({
 					<Button
 						onClick={handleFavorite}
 						disabled={favLoading}
-						variant="secondary"
+						variant="outline"
+						className={cn(
+							favLoading && "opacity-50 cursor-not-allowed"
+						)}
 					>
-						<Heart
-							className={
-								favorite ? "text-red-500" : "text-gray-500"
-							}
-							strokeWidth={2}
-							fill={favorite ? "currentColor" : "none"}
-						/>
+						{favLoading ? (
+							<span className="animate-pulse text-sm">
+								<Loader />
+							</span>
+						) : (
+							<Heart
+								className={
+									favorite ? "text-red-500" : "text-gray-500"
+								}
+								strokeWidth={2}
+								fill={favorite ? "currentColor" : "none"}
+							/>
+						)}
 					</Button>
 					<Button
 						onClick={handleAddToCart}
 						disabled={cartLoading}
 						variant="outline"
-						className="rounded-none flex items-center gap-x-1"
+						className={cn(
+							"rounded-none flex items-center gap-x-1",
+							cartLoading && "opacity-50 cursor-not-allowed"
+						)}
 					>
-						{itemInCart ? "ADDED TO CART" : "ADD TO CART"}{" "}
-						{itemInCart && <Check />}
+						{cartLoading ? (
+							<span className="animate-pulse text-sm">
+								<Loader />
+							</span>
+						) : (
+							<>
+								{itemInCart ? (
+									<ShoppingCart className="text-blue-600" />
+								) : (
+									<ShoppingCart />
+								)}
+								{itemInCart && (
+									<Check className="text-blue-600" />
+								)}
+							</>
+						)}
 					</Button>
+
 					<Button
 						onClick={() =>
 							router.push(`/bill?category=${category}&id=${id}`)

@@ -21,6 +21,33 @@ interface HeaderProps {
 	expandSearchBar?: boolean;
 }
 
+const categories = [
+	"beauty",
+	"fragrances",
+	"furniture",
+	"groceries",
+	"home-decoration",
+	"kitchen-accessories",
+	"laptops",
+	"mens-shirts",
+	"mens-shoes",
+	"mens-watches",
+	"mobile-accessories",
+	"motorcycle",
+	"skin-care",
+	"smartphones",
+	"sports-accessories",
+	"sunglasses",
+	"tablets",
+	"tops",
+	"vehicle",
+	"womens-bags",
+	"womens-dresses",
+	"womens-jewellery",
+	"womens-shoes",
+	"womens-watches",
+];
+
 const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 	const router = useRouter();
 	const dispatch = useDispatch();
@@ -53,22 +80,20 @@ const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 
 	return (
 		<>
-			{/* Announcement */}
-			<div className="fixed top-0 left-0 w-full bg-blue-50 text-blue-700 text-xs text-center py-[6px] z-50">
+			{/* Announcement Bar */}
+			<div className="fixed top-0 left-0 w-full bg-blue-50 text-blue-700 text-xs text-center py-[6px] z-50 dark:bg-blue-950 dark:text-blue-200">
 				🎉 Free shipping on orders over ₹999!
 			</div>
 
 			{/* Header */}
-			<header className="fixed top-[22px] z-40 w-full bg-white border-b">
-				<div className="max-w-[1440px] mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
-					{/* Left - Logo */}
+			<header className="fixed top-[22px] z-40 w-full bg-white border-b dark:bg-neutral-950 dark:border-neutral-800">
+				<div className="max-w-[1440px] mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
 					<Logo />
 
-					{/* Right - Icons */}
 					<div className="flex items-center gap-3 md:gap-4 ml-auto">
 						{expandSearchBar ? (
 							<input
-								className="border border-gray-300 rounded-full px-4 py-2 w-40 md:w-64 text-sm focus:outline-none focus:ring focus:border-blue-500"
+								className="border border-gray-300 dark:border-neutral-700 rounded-full px-4 py-2 w-40 md:w-64 text-sm bg-white dark:bg-neutral-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring focus:border-blue-500"
 								type="text"
 								placeholder="Search products"
 								onChange={(e) => pushToUrl(e.target.value)}
@@ -87,7 +112,7 @@ const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 							/>
 						)}
 
-						{/* Mobile Menu */}
+						{/* Mobile Menu Button */}
 						<div className="md:hidden">
 							<Button
 								onClick={() => setMenu(!isMenuOpen)}
@@ -99,9 +124,9 @@ const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 							</Button>
 						</div>
 
-						{/* User - Desktop */}
+						{/* Desktop User Menu */}
 						<div className="hidden md:flex items-center gap-2">
-							{session && session.user?.image && (
+							{session?.user?.image && (
 								<Image
 									src={session.user.image}
 									alt="User Avatar"
@@ -143,7 +168,7 @@ const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 
 				{/* Mobile Dropdown Menu */}
 				<nav
-					className={`md:hidden bg-neutral-100 transition-all duration-300 shadow-sm rounded-b-2xl overflow-hidden ${
+					className={`md:hidden bg-neutral-100 dark:bg-neutral-900 transition-all duration-300 shadow-sm rounded-b-2xl overflow-hidden ${
 						isMenuOpen ? "py-6" : "h-0 py-0"
 					}`}
 				>
@@ -164,7 +189,7 @@ const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 									<p className="text-sm font-semibold truncate">
 										{session.user?.name}
 									</p>
-									<p className="text-xs text-gray-500 truncate">
+									<p className="text-xs text-gray-500 dark:text-gray-400 truncate">
 										{session.user?.email}
 									</p>
 								</div>
@@ -199,7 +224,7 @@ const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 								</Link>
 								<button
 									onClick={handleLogout}
-									className="text-red-600 text-left font-semibold"
+									className="text-red-600 dark:text-red-400 text-left font-semibold"
 								>
 									Logout
 								</button>
@@ -224,25 +249,19 @@ const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 				</nav>
 			</header>
 
-			{/* Spacer */}
-			<div className="h-[100px] md:h-[116px]" />
+			{/* Header Spacer */}
+			<div className="h-[100px] md:h-[116px] bg-white dark:bg-black" />
 
 			{/* Category Bar */}
-			<nav className="sticky top-0 z-30 bg-white overflow-x-auto">
+			<nav className="sticky top-0 z-30 bg-white dark:bg-black overflow-x-auto scrollbar-hide">
 				<div className="max-w-[1440px] mx-auto flex gap-3 px-4 md:px-6 py-[6px] text-sm font-medium whitespace-nowrap">
-					{[
-						"Men",
-						"Women",
-						"Electronics",
-						"Shoes",
-						"Accessories",
-					].map((item) => (
+					{categories.map((cat) => (
 						<Link
-							key={item}
-							href={`/category/${item.toLowerCase()}`}
-							className="px-3 py-1 rounded-full bg-gray-100 hover:bg-blue-100 hover:text-blue-600 transition"
+							key={cat}
+							href={`/products/${cat}`}
+							className="px-3 py-1 rounded-full bg-gray-100 text-black dark:text-white dark:bg-neutral-800 hover:bg-blue-100 dark:hover:bg-blue-950 hover:text-blue-600 dark:hover:text-blue-400 transition capitalize"
 						>
-							{item}
+							{cat.replace(/-/g, " ")}
 						</Link>
 					))}
 				</div>

@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
-export default function RegisterPage() {
+export default function SignUpPage() {
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -49,7 +49,7 @@ export default function RegisterPage() {
 		}
 	};
 
-	const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
+	const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (loading) return;
 		setLoading(true);
@@ -68,7 +68,7 @@ export default function RegisterPage() {
 		if (photo) formData.append("photo", photo);
 
 		try {
-			const res = await fetch("/api/register", {
+			const res = await fetch("/api/signup", {
 				method: "POST",
 				body: formData,
 			});
@@ -84,15 +84,15 @@ export default function RegisterPage() {
 			}
 
 			if (res.ok) {
-				toast.success("✅ " + resultMessage);
+				toast.success(resultMessage);
 				setTimeout(() => {
 					window.location.href = "/login";
 				}, 1500);
 			} else {
-				toast.error("❌ " + resultMessage);
+				toast.error(resultMessage);
 			}
 		} catch (err) {
-			toast.error("❌ An error occurred during registration.");
+			toast.error("An error occurred during registration.");
 			console.error(err);
 		} finally {
 			setLoading(false);
@@ -107,7 +107,7 @@ export default function RegisterPage() {
 				<div className="hidden md:flex items-center justify-center">
 					<Image
 						src="https://i.pinimg.com/736x/0e/96/f4/0e96f4737006a7ee5b3806e67cb9691d.jpg"
-						alt="Register Illustration"
+						alt="Sign Up Illustration"
 						width={400}
 						height={400}
 						className="md:w-[calc(100vw/2)] h-[70vh] object-cover m-6"
@@ -162,7 +162,7 @@ export default function RegisterPage() {
 							)}
 						</div>
 
-						<form onSubmit={handleRegister} className="space-y-5">
+						<form onSubmit={handleSignUp} className="space-y-5">
 							{/* Full Name */}
 							<div className="space-y-1">
 								<label
@@ -248,7 +248,7 @@ export default function RegisterPage() {
 								disabled={loading}
 								className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
 							>
-								{loading ? "Registering..." : "Create Account"}
+								{loading ? "Signing Up..." : "Sign Up"}
 							</Button>
 						</form>
 

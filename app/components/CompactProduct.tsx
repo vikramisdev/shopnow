@@ -17,6 +17,7 @@ import {
 	useGetCartQuery,
 	useGetFavoritesQuery,
 } from "@/store/services/userApi";
+import USDToINR from "../utils/USDToINR";
 
 interface ItemProps {
 	id: number;
@@ -38,9 +39,6 @@ interface UserItem {
 	thumbnail: string;
 	category: string;
 }
-
-const toINR = (usd: number) =>
-	`₹${Math.round(usd * 83).toLocaleString("en-IN")}`;
 
 export default function CompactProduct(props: ItemProps) {
 	const router = useRouter();
@@ -138,7 +136,7 @@ export default function CompactProduct(props: ItemProps) {
 				</p>
 				<div className="flex items-center gap-2">
 					<span className="text-green-600 font-bold text-sm">
-						{toINR(props.price)}
+						{USDToINR(props.price)}
 					</span>
 					<Button
 						onClick={handleBuyNow}

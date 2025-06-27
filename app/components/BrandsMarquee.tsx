@@ -41,10 +41,10 @@ const brands = [
 ];
 
 export default function BrandsMarquee() {
-	const fullBrands = [...brands, ...brands]; // to loop seamlessly
+	const fullBrands = [...brands, ...brands]; // for seamless loop
 
 	return (
-		<section className="relative py-16 bg-gradient-to-b from-white via-gray-50 to-white dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 overflow-hidden border-b">
+		<section className="relative py-16 overflow-hidden border-b dark:border-b-black bg-white dark:bg-black">
 			<div className="max-w-screen-xl mx-auto px-4">
 				<h2
 					className="text-center text-[0.75rem] md:text-[20px] font-light text-gray-800 dark:text-white mb-8 tracking-wide"
@@ -56,8 +56,9 @@ export default function BrandsMarquee() {
 
 				{/* Marquee Container */}
 				<div className="overflow-hidden relative">
-					<div className="absolute top-0 left-0 h-full w-12 bg-gradient-to-r from-white to-transparent dark:from-neutral-900 pointer-events-none z-10" />
-					<div className="absolute top-0 right-0 h-full w-12 bg-gradient-to-l from-white to-transparent dark:from-neutral-900 pointer-events-none z-10" />
+					{/* Side gradients - only in light mode */}
+					<div className="absolute top-0 left-0 h-full w-12 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none dark:hidden" />
+					<div className="absolute top-0 right-0 h-full w-12 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none dark:hidden" />
 
 					<div className="flex w-max gap-12 animate-marquee whitespace-nowrap hover:[animation-play-state:paused]">
 						{fullBrands.map((brand, i) => (

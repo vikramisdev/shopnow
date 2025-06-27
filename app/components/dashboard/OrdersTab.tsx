@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useGetOrdersQuery } from "../../../store/services/userApi";
 import { PackageSearch } from "lucide-react";
+import USDToINR from "@/app/utils/USDToINR";
 
 interface ProductInOrder {
 	productId: number;
@@ -153,7 +154,8 @@ export default function OrdersTab() {
 						</div>
 						<div className="text-right">
 							<p className="font-medium">
-								Total: ₹{order.totalAmount.toFixed(2)}
+								Total: ₹
+								{USDToINR(Number(order.totalAmount.toFixed(0)))}
 							</p>
 						</div>
 					</div>

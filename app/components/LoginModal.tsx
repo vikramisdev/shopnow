@@ -45,11 +45,11 @@ export default function LoginModal({ trigger }: LoginModalProps) {
 
 		if (res?.error) {
 			if (res.error.includes("No account")) {
-				toast.error("❌ No account found. Please register.");
+				toast.error("No account found. Please Sign Up.");
 			} else if (res.error.includes("Incorrect password")) {
-				toast.error("❌ Incorrect password.");
+				toast.error("Incorrect password.");
 			} else {
-				toast.error(`❌ Login failed: ${res.error}`);
+				toast.error(`Login failed: ${res.error}`);
 			}
 		} else {
 			const session = await getSession();
@@ -64,7 +64,7 @@ export default function LoginModal({ trigger }: LoginModalProps) {
 				);
 			}
 
-			toast.success("✅ Logged in successfully!");
+			toast.success("Logged in successfully!");
 			router.push("/"); // or just reload with: window.location.reload()
 		}
 
@@ -131,10 +131,10 @@ export default function LoginModal({ trigger }: LoginModalProps) {
 				<div className="text-center text-sm text-muted-foreground mt-4">
 					No account?{" "}
 					<Link
-						href="/register"
+						href="/signup"
 						className="text-primary hover:underline font-medium"
 					>
-						Register
+						Sign Up Now
 					</Link>
 				</div>
 			</DialogContent>

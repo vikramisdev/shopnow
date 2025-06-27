@@ -2,8 +2,9 @@
 
 export const dynamic = "force-dynamic";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Suspense } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
 	ArrowLeft,
@@ -13,8 +14,8 @@ import {
 	Heart,
 	Settings,
 } from "lucide-react";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
+
 import ProfileTab from "../components/dashboard/ProfileTab";
 import OrdersTab from "../components/dashboard/OrdersTab";
 import CartTab from "../components/dashboard/CartTab";
@@ -32,19 +33,19 @@ const menuItems = [
 function Dashboard() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const initialTab = searchParams.get("tab") || "profile";
-	const [active, setActive] = useState(initialTab);
+	const active = searchParams.get("tab") || "profile";
 
 	return (
 		<div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
 			{/* Sidebar */}
 			<aside className="bg-white md:w-60 w-full border-b md:border-b-0 md:border-r shadow-sm">
+				{/* Home button */}
 				<div className="flex items-center justify-between md:justify-start p-4 border-b md:border-b-0">
 					<Link href="/">
 						<Button
 							variant="ghost"
 							size="sm"
-							className="text-sm px-2"
+							className="text-sm px-2 text-gray-700 md:hover:text-black"
 						>
 							<ArrowLeft className="mr-2 h-4 w-4" />
 							<span className="hidden md:inline">Home</span>
@@ -52,34 +53,44 @@ function Dashboard() {
 					</Link>
 				</div>
 
-				{/* Menu Tabs */}
+				{/* Navigation tabs */}
 				<nav className="flex md:flex-col md:space-y-1 justify-between px-2 py-4 md:px-4">
-					{menuItems.map((item) => (
-						<Button
-							key={item.id}
-							variant="ghost"
-							size="icon"
-							className={cn(
-								"w-full flex items-center justify-center md:justify-start gap-2 rounded-lg md:px-3 md:py-2 transition text-sm",
-								active === item.id
-									? "bg-black text-white hover:bg-black"
-									: "text-gray-700 hover:bg-gray-100"
-							)}
-							onClick={() => {
-								setActive(item.id);
-								router.push(`/dashboard?tab=${item.id}`);
-							}}
-						>
-							<item.icon className="h-5 w-5" />
-							<span className="hidden md:inline">
-								{item.label}
-							</span>
-						</Button>
-					))}
+					{menuItems.map((item) => {
+						const isActive = active === item.id;
+
+						return (
+							<Button
+								key={item.id}
+								variant="ghost"
+								className={cn(
+									"flex items-center gap-2 justify-center md:justify-start w-full py-2 px-2 md:px-4 rounded-lg text-sm transition",
+									isActive && "bg-black text-white",
+									!isActive && "text-gray-700",
+									"md:hover:bg-gray-100",
+									"focus:outline-none focus:ring-0 active:bg-transparent"
+								)}
+								onClick={() =>
+									router.push(`/dashboard?tab=${item.id}`)
+								}
+							>
+								<item.icon
+									className={cn(
+										"h-5 w-5",
+										isActive
+											? "md:text-white"
+											: "md:text-gray-700"
+									)}
+								/>
+								<span className="hidden md:inline">
+									{item.label}
+								</span>
+							</Button>
+						);
+					})}
 				</nav>
 			</aside>
 
-			{/* Main Content */}
+			{/* Main content */}
 			<main className="flex-1 p-4 md:p-8 overflow-y-auto bg-white rounded-t-2xl md:rounded-none">
 				{active === "profile" && <ProfileTab />}
 				{active === "orders" && <OrdersTab />}

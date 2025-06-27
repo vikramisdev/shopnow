@@ -55,16 +55,16 @@ export default function SeasonSale() {
 
 	return (
 		<section
-			className={`${season.bgColor} text-black w-full grid grid-cols-1 md:grid-cols-2 min-h-[70vh]`}
+			className={`${season.bgColor} text-black w-full grid grid-cols-1 md:grid-cols-2 min-h-[70vh] dark:bg-black`}
 		>
 			{/* Text Block */}
 			<div className="flex flex-col justify-center px-6 py-14 md:px-16 gap-4">
 				<h1
-					className={`text-3xl md:text-4xl font-bold ${season.textColor}`}
+					className={`text-3xl md:text-4xl font-bold ${season.textColor} dark:text-white`}
 				>
 					{season.title}
 				</h1>
-				<p className="text-base md:text-lg text-neutral-700">
+				<p className="text-base md:text-lg text-neutral-700 dark:text-gray-400">
 					{season.subtitle}
 				</p>
 

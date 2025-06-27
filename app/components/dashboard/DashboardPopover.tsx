@@ -35,7 +35,7 @@ export default function DashboardPopover({ trigger }: DashboardPopoverProps) {
 		try {
 			await signOut();
 			dispatch(logout());
-			toast.success("Logged out");
+			toast.success("Logged out successfully!");
 			router.push("/login");
 		} catch (err) {
 			toast.error(

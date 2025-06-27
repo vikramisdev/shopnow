@@ -45,9 +45,9 @@ const NewCollection: React.FC = () => {
 		);
 
 	return (
-		<section className="px-4 sm:px-8 md:px-10 py-24">
+		<section className="px-4 sm:px-8 md:px-10 py-24 bg-white dark:bg-black">
 			<h1 className="font-semibold text-3xl py-5 px-2">New Collection</h1>
-			<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+			<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
 				{products.map((product) => (
 					<Product
 						key={product.id}
@@ -59,9 +59,9 @@ const NewCollection: React.FC = () => {
 						category={product.category}
 						onClick={() =>
 							router.push(
-								`/products?category=${encodeURIComponent(
+								`/products/${encodeURIComponent(
 									product.category
-								)}&id=${product.id}`
+								)}/${product.id}`
 							)
 						}
 					/>

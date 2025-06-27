@@ -13,6 +13,7 @@ import { usePlaceOrderMutation } from "@/store/services/userApi";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import BillPageSkeleton from "../components/skeletons/BillPageSkeleton";
+import { useSession } from "next-auth/react";
 
 interface Product {
 	id: number;
@@ -26,6 +27,8 @@ function Bill() {
 	const router = useRouter();
 	const params = useSearchParams();
 	const id = params.get("id");
+
+	const { data: session } = useSession();
 
 	const [product, setProduct] = useState<Product | null>(null);
 	const [qty, setQty] = useState(1);
@@ -62,7 +65,13 @@ function Bill() {
 	const total = product ? product.price * qty : 0;
 
 	const handleOrder = async () => {
+		if (!session) {
+			toast.error("Please login or Sign Up first");
+			return;
+		}
+
 		if (!product) return;
+
 		if (!address.trim()) {
 			toast.error("Please enter a shipping address");
 			return;
@@ -243,9 +252,9 @@ function Bill() {
 }
 
 export default function BillPage() {
-	return(
+	return (
 		<Suspense>
 			<Bill />
 		</Suspense>
-	)
+	);
 }
