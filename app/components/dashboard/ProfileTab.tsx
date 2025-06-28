@@ -23,7 +23,7 @@ interface ProfileUpdatePayload {
 export default function ProfileTab() {
 	const { data: profile, isLoading } = useGetProfileQuery(undefined);
 	const [updateProfile, { isLoading: updating }] = useUpdateProfileMutation();
-	const { theme, setTheme } = useTheme();
+	const { resolvedTheme, setTheme } = useTheme();
 
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
@@ -79,10 +79,10 @@ export default function ProfileTab() {
 					variant="outline"
 					size="icon"
 					onClick={() =>
-						setTheme(theme === "dark" ? "light" : "dark")
+						setTheme(resolvedTheme === "dark" ? "light" : "dark")
 					}
 				>
-					{theme === "dark" ? (
+					{resolvedTheme === "dark" ? (
 						<Sun className="h-5 w-5" />
 					) : (
 						<Moon className="h-5 w-5" />

@@ -110,12 +110,11 @@ function Bill() {
 	if (!id || loading || !product) return <BillPageSkeleton />;
 
 	return (
-		<div className="min-h-screen flex flex-col">
+		<div className="min-h-screen flex flex-col bg-white dark:bg-black text-black dark:text-white transition-colors duration-500">
 			<Header />
 
 			<main className="flex-1 py-10 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto pt-36">
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
-					{/* Product Image */}
 					<div className="w-full">
 						<Image
 							src={product.thumbnail}
@@ -126,17 +125,14 @@ function Bill() {
 						/>
 					</div>
 
-					{/* Form Section */}
 					<div className="space-y-6">
 						<h1 className="text-3xl font-semibold">
 							Checkout: {product.title}
 						</h1>
-
-						<p className="text-gray-600 text-sm leading-relaxed">
+						<p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
 							{product.description}
 						</p>
-
-						<p className="text-2xl font-bold text-black">
+						<p className="text-2xl font-bold text-black dark:text-white">
 							₹{(total * 83).toFixed(0)}
 						</p>
 
@@ -177,7 +173,7 @@ function Bill() {
 								<select
 									value={payment}
 									onChange={(e) => setPayment(e.target.value)}
-									className="w-full border px-3 py-2 rounded-md text-sm"
+									className="w-full border px-3 py-2 rounded-md text-sm dark:bg-zinc-800 dark:text-white"
 								>
 									<option value="cashOnDelivery">
 										Cash on Delivery
@@ -189,10 +185,9 @@ function Bill() {
 								</select>
 							</div>
 
-							{/* Payment Inputs */}
 							{payment === "upi" && (
 								<div className="space-y-2 mt-2">
-									<p className="text-sm text-gray-600">
+									<p className="text-sm text-gray-600 dark:text-gray-400">
 										Scan to pay <strong>vikram@upi</strong>
 									</p>
 									<Image
@@ -234,7 +229,7 @@ function Bill() {
 						<Button
 							onClick={handleOrder}
 							disabled={ordering}
-							className="w-full bg-black text-white py-2 text-md rounded-lg hover:bg-gray-900 transition"
+							className="w-full bg-black text-white py-2 text-md rounded-lg hover:bg-gray-900 dark:hover:bg-gray-800 transition"
 						>
 							{ordering
 								? "Processing..."

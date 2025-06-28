@@ -27,9 +27,9 @@ export default function DashboardPopover({ trigger }: DashboardPopoverProps) {
 	const router = useRouter();
 	const user = useSelector((state: RootState) => state.auth.user);
 
-	const cartCount = 4; // dummy value
-	const ordersCount = 2; // dummy value
-	const favoritesCount = 6; // dummy value
+	const cartCount = 4;
+	const ordersCount = 2;
+	const favoritesCount = 6;
 
 	const handleLogout = async () => {
 		try {
@@ -57,7 +57,7 @@ export default function DashboardPopover({ trigger }: DashboardPopoverProps) {
 			<PopoverContent
 				side="bottom"
 				align="end"
-				className="w-64 mt-2 p-4 rounded-lg border shadow-md bg-white"
+				className="w-64 mt-2 p-4 rounded-lg border shadow-md bg-white text-black dark:bg-zinc-900 dark:text-white dark:border-zinc-700"
 			>
 				{/* User Info */}
 				<div className="flex items-center gap-3 mb-4">
@@ -71,16 +71,16 @@ export default function DashboardPopover({ trigger }: DashboardPopoverProps) {
 								className="rounded-full object-cover"
 							/>
 						) : (
-							<AvatarFallback>
+							<AvatarFallback className="bg-gray-300 dark:bg-zinc-700 text-black dark:text-white">
 								{user?.email?.charAt(0).toUpperCase() || "U"}
 							</AvatarFallback>
 						)}
 					</Avatar>
 					<div className="truncate">
-						<p className="text-sm font-semibold text-gray-900">
+						<p className="text-sm font-semibold">
 							{user?.name || "Unknown User"}
 						</p>
-						<p className="text-xs text-gray-500 truncate">
+						<p className="text-xs text-gray-500 dark:text-gray-300 truncate">
 							{user?.email || "your@email.com"}
 						</p>
 					</div>
@@ -90,7 +90,7 @@ export default function DashboardPopover({ trigger }: DashboardPopoverProps) {
 				<div className="space-y-1 text-sm">
 					<Button
 						variant="ghost"
-						className="w-full justify-start gap-2"
+						className="w-full justify-start gap-2 hover:bg-gray-100 dark:hover:bg-zinc-800"
 						onClick={() => goTo()}
 					>
 						<LayoutDashboard className="h-4 w-4" /> Dashboard
@@ -98,42 +98,42 @@ export default function DashboardPopover({ trigger }: DashboardPopoverProps) {
 
 					<Button
 						variant="ghost"
-						className="w-full justify-between"
+						className="w-full justify-between hover:bg-gray-100 dark:hover:bg-zinc-800"
 						onClick={() => goTo("orders")}
 					>
 						<div className="flex gap-2 items-center">
 							<PackageSearch className="h-4 w-4" />
 							Orders
 						</div>
-						<span className="text-xs bg-green-600 text-white px-2 py-0.5 rounded-full">
+						<span className="text-xs bg-green-600 text-white px-2 py-0.5 rounded-full dark:bg-green-500">
 							{ordersCount}
 						</span>
 					</Button>
 
 					<Button
 						variant="ghost"
-						className="w-full justify-between"
+						className="w-full justify-between hover:bg-gray-100 dark:hover:bg-zinc-800"
 						onClick={() => goTo("cart")}
 					>
 						<div className="flex gap-2 items-center">
 							<ShoppingBag className="h-4 w-4" />
 							Cart
 						</div>
-						<span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full">
+						<span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full dark:bg-blue-500">
 							{cartCount}
 						</span>
 					</Button>
 
 					<Button
 						variant="ghost"
-						className="w-full justify-between"
+						className="w-full justify-between hover:bg-gray-100 dark:hover:bg-zinc-800"
 						onClick={() => goTo("favorites")}
 					>
 						<div className="flex gap-2 items-center">
 							<Heart className="h-4 w-4" />
 							Favorites
 						</div>
-						<span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">
+						<span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full dark:bg-red-500">
 							{favoritesCount}
 						</span>
 					</Button>
@@ -144,7 +144,7 @@ export default function DashboardPopover({ trigger }: DashboardPopoverProps) {
 					<Button
 						onClick={handleLogout}
 						variant="outline"
-						className="w-full justify-center text-red-600 border-red-400 hover:bg-red-50 hover:text-red-700"
+						className="w-full justify-center text-red-600 border-red-400 hover:bg-red-50 dark:hover:bg-zinc-800 dark:border-red-400 dark:text-red-400"
 					>
 						<LogOut className="h-4 w-4 mr-2" /> Logout
 					</Button>

@@ -1,7 +1,5 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense } from "react";
 import Link from "next/link";
@@ -36,16 +34,16 @@ function Dashboard() {
 	const active = searchParams.get("tab") || "profile";
 
 	return (
-		<div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
+		<div className="flex flex-col md:flex-row min-h-screen bg-gray-100 dark:bg-black">
 			{/* Sidebar */}
-			<aside className="bg-white md:w-60 w-full border-b md:border-b-0 md:border-r shadow-sm">
+			<aside className="bg-white dark:bg-neutral-900 md:w-60 w-full border-b md:border-b-0 md:border-r shadow-sm dark:border-neutral-800">
 				{/* Home button */}
-				<div className="flex items-center justify-between md:justify-start p-4 border-b md:border-b-0">
+				<div className="flex items-center justify-between md:justify-start p-4 border-b md:border-b-0 dark:border-neutral-800">
 					<Link href="/">
 						<Button
 							variant="ghost"
 							size="sm"
-							className="text-sm px-2 text-gray-700 md:hover:text-black"
+							className="text-sm px-2 text-gray-700 dark:text-gray-300 md:hover:text-black dark:md:hover:text-white"
 						>
 							<ArrowLeft className="mr-2 h-4 w-4" />
 							<span className="hidden md:inline">Home</span>
@@ -64,9 +62,11 @@ function Dashboard() {
 								variant="ghost"
 								className={cn(
 									"flex items-center gap-2 justify-center md:justify-start w-full py-2 px-2 md:px-4 rounded-lg text-sm transition",
-									isActive && "bg-black text-white",
-									!isActive && "text-gray-700",
-									"md:hover:bg-gray-100",
+									isActive &&
+										"bg-black text-white dark:bg-white dark:text-black",
+									!isActive &&
+										"text-gray-700 dark:text-gray-300",
+									"md:hover:bg-gray-200 dark:md:hover:bg-neutral-800",
 									"focus:outline-none focus:ring-0 active:bg-transparent"
 								)}
 								onClick={() =>
@@ -77,8 +77,8 @@ function Dashboard() {
 									className={cn(
 										"h-5 w-5",
 										isActive
-											? "md:text-white"
-											: "md:text-gray-700"
+											? "text-white dark:text-black"
+											: "text-gray-700 dark:text-gray-300"
 									)}
 								/>
 								<span className="hidden md:inline">
@@ -91,7 +91,7 @@ function Dashboard() {
 			</aside>
 
 			{/* Main content */}
-			<main className="flex-1 p-4 md:p-8 overflow-y-auto bg-white rounded-t-2xl md:rounded-none">
+			<main className="flex-1 p-4 md:p-8 overflow-y-auto bg-white dark:bg-neutral-950 text-black dark:text-white rounded-t-2xl md:rounded-none">
 				{active === "profile" && <ProfileTab />}
 				{active === "orders" && <OrdersTab />}
 				{active === "cart" && <CartTab />}

@@ -118,24 +118,24 @@ export default function CompactProduct(props: ItemProps) {
 	return (
 		<div
 			onClick={handleProductClick}
-			className="flex gap-4 p-4 bg-gradient-to-tr from-gray-50 via-white to-gray-100 shadow-lg rounded-2xl items-center transition hover:shadow-xl hover:-translate-y-1 cursor-pointer"
+			className="border dark:border-gray-400 flex gap-4 p-4 bg-gradient-to-tr from-gray-50 via-white to-gray-100 dark:from-neutral-900 dark:via-neutral-950 dark:to-black shadow-lg rounded-2xl items-center transition hover:shadow-xl hover:-translate-y-1 cursor-pointer"
 		>
 			{/* Thumbnail */}
 			<div
-				className="w-24 h-24 bg-cover bg-center rounded-xl border border-gray-300"
+				className="w-24 h-24 bg-cover bg-center rounded-xl border border-gray-300 dark:border-neutral-700"
 				style={{ backgroundImage: `url(${props.thumbnail})` }}
 			/>
 
 			{/* Details & Actions */}
 			<div className="flex-1 overflow-hidden space-y-1">
-				<h3 className="text-base font-semibold truncate text-gray-800">
+				<h3 className="text-base font-semibold truncate text-gray-800 dark:text-gray-100">
 					{props.title}
 				</h3>
-				<p className="text-sm text-gray-500 truncate">
+				<p className="text-sm text-gray-500 dark:text-gray-400 truncate">
 					{props.description}
 				</p>
 				<div className="flex items-center gap-2">
-					<span className="text-green-600 font-bold text-sm">
+					<span className="text-green-600 dark:text-green-400 font-bold text-sm">
 						{USDToINR(props.price)}
 					</span>
 					<Button
@@ -154,14 +154,16 @@ export default function CompactProduct(props: ItemProps) {
 				<Button
 					onClick={toggleFavorite}
 					variant="ghost"
-					className="w-8 h-8 p-0 rounded-full hover:bg-pink-100"
+					className="w-8 h-8 p-0 rounded-full hover:bg-pink-100 dark:hover:bg-pink-900"
 				>
 					{favoriteLoading ? (
-						<Loader2 className="animate-spin text-gray-500 h-4 w-4" />
+						<Loader2 className="animate-spin text-gray-500 dark:text-gray-400 h-4 w-4" />
 					) : (
 						<Heart
 							className={`h-4 w-4 transition-colors ${
-								isFavorite ? "text-red-500" : "text-gray-400"
+								isFavorite
+									? "text-red-500"
+									: "text-gray-400 dark:text-gray-500"
 							}`}
 							fill={isFavorite ? "currentColor" : "none"}
 						/>
@@ -170,14 +172,14 @@ export default function CompactProduct(props: ItemProps) {
 				<Button
 					onClick={toggleCart}
 					variant="ghost"
-					className="w-8 h-8 p-0 rounded-full hover:bg-blue-100"
+					className="w-8 h-8 p-0 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900"
 				>
 					{cartLoading ? (
-						<Loader2 className="animate-spin text-gray-500 h-4 w-4" />
+						<Loader2 className="animate-spin text-gray-500 dark:text-gray-400 h-4 w-4" />
 					) : isInCart ? (
-						<CheckSquare className="text-blue-600 h-4 w-4" />
+						<CheckSquare className="text-blue-600 dark:text-blue-400 h-4 w-4" />
 					) : (
-						<ShoppingBagIcon className="text-gray-400 h-4 w-4" />
+						<ShoppingBagIcon className="text-gray-400 dark:text-gray-500 h-4 w-4" />
 					)}
 				</Button>
 			</div>

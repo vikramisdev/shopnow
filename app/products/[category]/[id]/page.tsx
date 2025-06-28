@@ -45,7 +45,7 @@ export default async function ProductPage({
 	return (
 		<>
 			<Header />
-			<div className="md:px-12 px-6 pt-24 min-h-[70vh]">
+			<div className="md:px-12 px-6 pt-24 min-h-[70vh] bg-white dark:bg-black">
 				<ProductPreview
 					id={product.id}
 					title={product.title}

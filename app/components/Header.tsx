@@ -106,7 +106,7 @@ const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 										size="md"
 										aria-label="Search"
 									>
-										<Search />
+										<Search className="text-black dark:text-white" />
 									</Button>
 								}
 							/>
@@ -120,7 +120,11 @@ const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 								aria-label="Toggle Menu"
 								size="md"
 							>
-								{isMenuOpen ? <X /> : <MenuIcon />}
+								{isMenuOpen ? (
+									<X className="text-black dark:text-white" />
+								) : (
+									<MenuIcon className="text-black dark:text-white" />
+								)}
 							</Button>
 						</div>
 
@@ -144,7 +148,7 @@ const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 												size="md"
 												aria-label="Dashboard"
 											>
-												<UserIcon />
+												<UserIcon className="text-black dark:text-white" />
 											</Button>
 										</PopoverTrigger>
 									}
@@ -157,7 +161,7 @@ const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 											size="md"
 											aria-label="Login"
 										>
-											<UserIcon />
+											<UserIcon className="text-black dark:text-white" />
 										</Button>
 									}
 								/>
@@ -185,7 +189,7 @@ const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 									height={40}
 									className="rounded-full object-cover"
 								/>
-								<div>
+								<div className="text-black dark:text-white">
 									<p className="text-sm font-semibold truncate">
 										{session.user?.name}
 									</p>
@@ -199,24 +203,28 @@ const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 						{session ? (
 							<>
 								<Link
+									className="text-black dark:text-white"
 									href="/dashboard"
 									onClick={() => setMenu(false)}
 								>
 									Dashboard
 								</Link>
 								<Link
+									className="text-black dark:text-white"
 									href="/dashboard?tab=orders"
 									onClick={() => setMenu(false)}
 								>
 									Orders
 								</Link>
 								<Link
+									className="text-black dark:text-white"
 									href="/dashboard?tab=cart"
 									onClick={() => setMenu(false)}
 								>
 									Cart
 								</Link>
 								<Link
+									className="text-black dark:text-white"
 									href="/dashboard?tab=favorites"
 									onClick={() => setMenu(false)}
 								>
@@ -224,7 +232,7 @@ const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 								</Link>
 								<button
 									onClick={handleLogout}
-									className="text-red-600 dark:text-red-400 text-left font-semibold"
+									className="text-red-600 dark:text-red-400 text-left font-semibold text-black dark:text-white"
 								>
 									Logout
 								</button>
@@ -232,12 +240,14 @@ const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 						) : (
 							<>
 								<Link
+									className="text-black dark:text-white"
 									href="/login"
 									onClick={() => setMenu(false)}
 								>
 									Login
 								</Link>
 								<Link
+									className="text-black dark:text-white"
 									href="/signup"
 									onClick={() => setMenu(false)}
 								>

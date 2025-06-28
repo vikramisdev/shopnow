@@ -33,9 +33,16 @@ function Products() {
 		const fetchProduct = async () => {
 			if (!id) return;
 
+			setLoading(true);
+			setError(false);
+
 			try {
 				const res = await fetch(`https://dummyjson.com/products/${id}`);
+				if (!res.ok) throw new Error("Network response failed");
+
 				const data = await res.json();
+				if (!data?.id) throw new Error("Product data invalid");
+
 				setProduct(data);
 			} catch (err) {
 				console.error("Error fetching product:", err);
@@ -49,34 +56,37 @@ function Products() {
 	}, [id]);
 
 	return (
-		<div>
+		<div className="bg-white dark:bg-black text-gray-900 dark:text-gray-100 transition-colors">
 			<Header />
-			<div className="md:px-12 px-6 pt-24 min-h-[70vh]">
+
+			<main className="md:px-12 px-6 pt-24 min-h-[70vh]">
 				{loading ? (
 					<ProductPreviewSkeleton />
 				) : error ? (
-					<p className="text-center text-red-500">
-						Failed to load product. Try again later.
+					<p className="text-center text-red-500 font-medium">
+						⚠️ Failed to load product. Please try again later.
 					</p>
 				) : product ? (
-					<div>
-						<ProductPreview
-							id={product.id}
-							title={product.title}
-							description={product.description}
-							price={String(product.price)}
-							thumbnail={product.images[0] || product.thumbnail}
-							rating={product.rating}
-							brand={product.brand}
-							category={product.category}
-						/>
-					</div>
+					<ProductPreview
+						id={product.id}
+						title={product.title}
+						description={product.description}
+						price={product.price}
+						thumbnail={
+							product.images[0] ||
+							product.thumbnail ||
+							"/images/default.png"
+						}
+						rating={product.rating}
+						brand={product.brand}
+						category={product.category}
+					/>
 				) : (
-					<p className="text-center text-muted-foreground">
+					<p className="text-center text-gray-500 dark:text-gray-400 font-medium">
 						Product not found.
 					</p>
 				)}
-			</div>
+			</main>
 
 			<Footer />
 		</div>
@@ -85,7 +95,7 @@ function Products() {
 
 export default function ProductsPage() {
 	return (
-		<Suspense>
+		<Suspense fallback={<ProductPreviewSkeleton />}>
 			<Products />
 		</Suspense>
 	);

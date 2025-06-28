@@ -189,7 +189,7 @@ export default function ProductPreview({
 	};
 
 	return (
-		<div className="flex flex-wrap-reverse md:py-12">
+		<div className="flex flex-wrap-reverse md:py-12 bg-white dark:bg-black text-black dark:text-white transition-colors duration-500">
 			{/* Info */}
 			<div className="flex-1 md:py-8 md:px-6">
 				<h1 className="md:text-8xl text-3xl font-semibold mt-6 md:mt-0">
@@ -207,8 +207,10 @@ export default function ProductPreview({
 					/>
 				)}
 
-				<p className="pt-4 md:pr-36">{description}</p>
-				<p className="py-1 px-2 w-fit font-semibold bg-green-50 mt-6 text-green-950">
+				<p className="pt-4 md:pr-36 text-gray-800 dark:text-gray-200">
+					{description}
+				</p>
+				<p className="py-1 px-2 w-fit font-semibold bg-green-50 dark:bg-green-900 text-green-950 dark:text-green-100 mt-6">
 					Exchange & Return Available
 				</p>
 
@@ -224,7 +226,7 @@ export default function ProductPreview({
 								className={
 									rating >= n
 										? "text-yellow-500"
-										: "text-gray-300"
+										: "text-gray-300 dark:text-gray-700"
 								}
 							/>
 						))}{" "}
@@ -253,7 +255,9 @@ export default function ProductPreview({
 						) : (
 							<Heart
 								className={
-									favorite ? "text-red-500" : "text-gray-500"
+									favorite
+										? "text-red-500"
+										: "text-gray-500 dark:text-gray-300"
 								}
 								strokeWidth={2}
 								fill={favorite ? "currentColor" : "none"}
@@ -275,11 +279,13 @@ export default function ProductPreview({
 							</span>
 						) : (
 							<>
-								{itemInCart ? (
-									<ShoppingCart className="text-blue-600" />
-								) : (
-									<ShoppingCart />
-								)}
+								<ShoppingCart
+									className={
+										itemInCart
+											? "text-blue-600"
+											: "text-gray-700 dark:text-gray-300"
+									}
+								/>
 								{itemInCart && (
 									<Check className="text-blue-600" />
 								)}
@@ -308,13 +314,13 @@ export default function ProductPreview({
 								.map((_, idx) => (
 									<div
 										key={idx}
-										className="bg-gray-100 rounded-lg p-3 flex gap-3 items-start"
+										className="bg-gray-100 dark:bg-zinc-700 rounded-lg p-3 flex gap-3 items-start"
 									>
-										<Skeleton className="w-10 h-10 rounded-full" />
+										<Skeleton className="w-10 h-10 rounded-full dark:bg-zinc-600" />
 										<div className="flex-1 space-y-2">
-											<Skeleton className="w-1/3 h-4" />
-											<Skeleton className="w-full h-4" />
-											<Skeleton className="w-1/4 h-3" />
+											<Skeleton className="w-1/3 h-4 dark:bg-zinc-600" />
+											<Skeleton className="w-full h-4 dark:bg-zinc-600" />
+											<Skeleton className="w-1/4 h-3 dark:bg-zinc-600" />
 										</div>
 									</div>
 								))}
@@ -329,7 +335,7 @@ export default function ProductPreview({
 								return (
 									<div
 										key={r._id}
-										className="bg-gray-100 rounded-lg p-3 flex gap-3 items-start"
+										className="bg-gray-100 dark:bg-zinc-700 rounded-lg p-3 flex gap-3 items-start"
 									>
 										{user?.image ? (
 											<Image
@@ -340,23 +346,23 @@ export default function ProductPreview({
 												className="rounded-full"
 											/>
 										) : (
-											<div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-sm">
+											<div className="w-10 h-10 rounded-full bg-gray-300 dark:bg-zinc-800 flex items-center justify-center text-sm">
 												{user?.name[0]}
 											</div>
 										)}
 										<div className="flex-1">
 											<div className="flex justify-between">
-												<span className="font-medium">
+												<span className="font-medium dark:text-white">
 													{user?.name}
 												</span>
 												<span className="text-yellow-600">
 													{r.rating} ★
 												</span>
 											</div>
-											<p className="text-sm text-gray-700 mt-1">
+											<p className="text-sm text-gray-700 mt-1 dark:text-gray-100">
 												{r.comment}
 											</p>
-											<p className="text-xs text-gray-500 mt-1">
+											<p className="text-xs text-gray-500 mt-1 dark:text-gray-300">
 												{new Date(
 													r.date
 												).toLocaleString()}
@@ -367,7 +373,7 @@ export default function ProductPreview({
 							})}
 						</div>
 					) : (
-						<p className="text-gray-500 text-sm mb-4">
+						<p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
 							No reviews yet.
 						</p>
 					)}
@@ -380,7 +386,7 @@ export default function ProductPreview({
 							value={reviewRating}
 							min={1}
 							max={5}
-							className="mb-2"
+							className="mb-2 bg-white dark:bg-zinc-800 text-black dark:text-white"
 							onChange={(e) =>
 								setReviewRating(Number(e.target.value))
 							}
@@ -390,7 +396,7 @@ export default function ProductPreview({
 							value={reviewComment}
 							onChange={(e) => setReviewComment(e.target.value)}
 							placeholder="Your comment..."
-							className="mb-2"
+							className="mb-2 bg-white dark:bg-zinc-800 text-black dark:text-white"
 						/>
 						<Button onClick={handleSubmitReview} disabled={posting}>
 							{posting ? "Submitting..." : "Submit Review"}

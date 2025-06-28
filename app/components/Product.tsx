@@ -119,24 +119,24 @@ export default function Product(props: ItemProps) {
 	return (
 		<div
 			onClick={props.onClick}
-			className="p-2 w-full sm:w-[48%] md:w-72 flex flex-col rounded-2xl gap-y-3 shadow-md transition-transform hover:-translate-y-2 cursor-pointer bg-white dark:bg-neutral-900"
+			className="p-2 w-full sm:w-[48%] md:w-72 flex flex-col rounded-2xl gap-y-3 shadow-md transition-transform hover:-translate-y-2 cursor-pointer bg-white dark:bg-[#1c1c1c]"
 		>
 			{/* Image + Actions */}
 			<div
-				className="h-96 bg-slate-100 dark:bg-neutral-800 bg-center bg-cover rounded-2xl p-4 flex flex-col justify-between"
+				className="h-96 bg-slate-100 dark:bg-[#2c2c2c] bg-center bg-cover rounded-2xl p-4 flex flex-col justify-between"
 				style={{ backgroundImage: `url(${props.thumbnail})` }}
 			>
 				{/* Favorite Button */}
 				<div className="flex justify-end">
 					<Button onClick={toggleFavorite}>
 						{favoriteLoading ? (
-							<Loader2 className="animate-spin text-gray-500 dark:text-gray-300" />
+							<Loader2 className="animate-spin text-gray-500 dark:text-neutral-400" />
 						) : (
 							<Heart
 								className={`transition-colors ${
 									isFavorite
 										? "text-red-500"
-										: "text-gray-500 dark:text-gray-300"
+										: "text-gray-500 dark:text-neutral-400"
 								}`}
 								strokeWidth={2}
 								fill={isFavorite ? "currentColor" : "none"}
@@ -147,38 +147,33 @@ export default function Product(props: ItemProps) {
 
 				{/* Bottom Buttons */}
 				<div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-2 mt-auto">
-					{/* Cart & Price */}
 					<div className="flex items-center justify-between gap-2 w-full md:w-auto">
-						{/* Add to Cart */}
 						<Button onClick={toggleCart}>
 							{cartLoading ? (
-								<Loader2 className="animate-spin text-gray-500 dark:text-gray-300" />
+								<Loader2 className="animate-spin text-gray-500 dark:text-neutral-400" />
 							) : isInCart ? (
 								<CheckSquare className="text-blue-500" />
 							) : (
-								<ShoppingBagIcon className="text-gray-500 dark:text-gray-300" />
+								<ShoppingBagIcon className="text-gray-500 dark:text-neutral-400" />
 							)}
 						</Button>
-
-						{/* Price */}
-						<div className="bg-black text-white dark:bg-white dark:text-black px-3 py-2 rounded-full text-sm h-10 flex items-center">
+						<div className="bg-black text-white dark:bg-neutral-100 dark:text-black px-3 py-2 rounded-full text-sm h-10 flex items-center">
 							{USDToINR(props.price)}
 						</div>
 					</div>
 
-					{/* Buy Now */}
 					<div
 						onClick={handleBuyNow}
-						className="group flex items-center justify-center gap-2 bg-black bg-opacity-60 dark:bg-white dark:bg-opacity-80 px-4 py-2 rounded-full text-white dark:text-black text-sm transition w-full md:w-auto"
+						className="group flex items-center justify-center gap-2 bg-black bg-opacity-60 dark:bg-white dark:bg-opacity-90 px-4 py-2 rounded-full text-white dark:text-black text-sm transition w-full md:w-auto"
 					>
-						<span>Buy Now</span>
+						<span>Buy</span>
 						<ArrowRight className="bg-white text-black dark:bg-black dark:text-white h-6 w-6 p-1 rounded-full group-hover:rotate-90 transition-transform duration-500" />
 					</div>
 				</div>
 			</div>
 
 			{/* Info Section */}
-			<div className="bg-gray-200 dark:bg-neutral-800 rounded-2xl p-4 h-20">
+			<div className="bg-gray-200 dark:bg-[#2b2b2b] rounded-2xl p-4 h-20">
 				<h2 className="text-lg font-semibold text-black dark:text-white truncate">
 					{props.title}
 				</h2>
