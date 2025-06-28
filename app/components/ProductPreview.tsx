@@ -161,10 +161,8 @@ export default function ProductPreview({
 		const user = session?.user as {
 			id: string;
 			name: string;
-			email: string;
 			image?: string;
 		};
-
 		if (!user?.id) {
 			toast.error("You must be logged in to submit a review.");
 			return;
@@ -179,7 +177,6 @@ export default function ProductPreview({
 					rating: reviewRating,
 				},
 			}).unwrap();
-
 			setReviewComment("");
 			setReviewRating(5);
 			toast.success("Review submitted!");
@@ -190,7 +187,6 @@ export default function ProductPreview({
 
 	return (
 		<div className="flex flex-wrap-reverse md:py-12 bg-white dark:bg-black text-black dark:text-white transition-colors duration-500">
-			{/* Info */}
 			<div className="flex-1 md:py-8 md:px-6">
 				<h1 className="md:text-8xl text-3xl font-semibold mt-6 md:mt-0">
 					{title}
@@ -213,32 +209,60 @@ export default function ProductPreview({
 				<p className="py-1 px-2 w-fit font-semibold bg-green-50 dark:bg-green-900 text-green-950 dark:text-green-100 mt-6">
 					Exchange & Return Available
 				</p>
+				<div className="flex items-center gap-x-2 mt-2">
+					<b>Ratings:</b>
+					{[1, 2, 3, 4, 5].map((n) => (
+						<StarFilledIcon
+							key={n}
+							className={
+								rating >= n
+									? "text-yellow-500"
+									: "text-gray-300 dark:text-gray-700"
+							}
+						/>
+					))}
+					{rating}
+				</div>
 
-				<Accordian className="my-4">
+				<Accordian title="Details" className="my-4">
 					<p>
 						<b>Brand:</b> {brand}
 					</p>
-					<p className="flex items-center gap-x-2">
-						<b>Ratings:</b>{" "}
-						{[1, 2, 3, 4, 5].map((n) => (
-							<StarFilledIcon
-								key={n}
-								className={
-									rating >= n
-										? "text-yellow-500"
-										: "text-gray-300 dark:text-gray-700"
-								}
-							/>
-						))}{" "}
-						{rating}
+					<p>
+						<b>SKU:</b> MEN-FAS-BLU-083
 					</p>
+					<p>
+						<b>Stock:</b> 38 units
+					</p>
+					<p>
+						<b>Warranty:</b> 3 year warranty
+					</p>
+					<p>
+						<b>Return Policy:</b> 30 days return policy
+					</p>
+					<p>
+						<b>Shipping:</b> Ships in 3-5 business days
+					</p>
+					<p>
+						<b>Availability:</b> In Stock
+					</p>
+					<p>
+						<b>Dimensions:</b> 27.49 x 23.73 x 28.61 cm
+					</p>
+					<div className="mt-2">
+						<Image
+							src="https://cdn.dummyjson.com/public/qr-code.png"
+							alt="QR Code"
+							width={100}
+							height={100}
+						/>
+					</div>
 				</Accordian>
 
 				<Accordian title="Payment Methods" className="my-4">
 					<p>Cash On Delivery</p>
 				</Accordian>
 
-				{/* Actions */}
 				<div className="flex gap-x-4 pt-6 flex-wrap">
 					<Button
 						onClick={handleFavorite}
@@ -292,7 +316,6 @@ export default function ProductPreview({
 							</>
 						)}
 					</Button>
-
 					<Button
 						onClick={() =>
 							router.push(`/bill?category=${category}&id=${id}`)
@@ -303,7 +326,7 @@ export default function ProductPreview({
 					</Button>
 				</div>
 
-				{/* Reviews */}
+				{/* Reviews section untouched */}
 				<div className="pt-10">
 					<h1 className="text-xl font-semibold mb-2">Reviews</h1>
 
@@ -378,7 +401,6 @@ export default function ProductPreview({
 						</p>
 					)}
 
-					{/* Write Review */}
 					<div className="mt-6">
 						<h2 className="font-medium mb-2">Write a review</h2>
 						<Input
@@ -405,7 +427,6 @@ export default function ProductPreview({
 				</div>
 			</div>
 
-			{/* Product Image */}
 			<div className="relative">
 				{imageLoading && (
 					<Skeleton className="size-[500px] absolute top-0 left-0" />

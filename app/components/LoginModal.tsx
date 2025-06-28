@@ -65,7 +65,7 @@ export default function LoginModal({ trigger }: LoginModalProps) {
 			}
 
 			toast.success("Logged in successfully!");
-			router.push("/"); // or just reload with: window.location.reload()
+			router.push("/");
 		}
 
 		setLoading(false);
@@ -75,19 +75,25 @@ export default function LoginModal({ trigger }: LoginModalProps) {
 		<Dialog>
 			<DialogTrigger asChild>{trigger}</DialogTrigger>
 
-			<DialogContent className="sm:max-w-md">
+			<DialogContent className="sm:max-w-md bg-white dark:bg-zinc-900 border dark:border-zinc-700 text-black dark:text-white">
 				<DialogHeader>
 					<DialogTitle className="text-xl font-bold">
 						Login
 					</DialogTitle>
-					<DialogDescription>
+					<DialogDescription className="text-sm text-gray-600 dark:text-gray-400">
 						Enter your email and password to log in.
 					</DialogDescription>
 				</DialogHeader>
 
 				<form onSubmit={handleSubmit} className="space-y-4 mt-4">
+					{/* Email */}
 					<div className="space-y-2">
-						<Label htmlFor="email">Email</Label>
+						<Label
+							htmlFor="email"
+							className="text-gray-700 dark:text-gray-300"
+						>
+							Email
+						</Label>
 						<Input
 							id="email"
 							type="email"
@@ -96,11 +102,18 @@ export default function LoginModal({ trigger }: LoginModalProps) {
 							onChange={(e) => setEmail(e.target.value)}
 							required
 							disabled={loading}
+							className="bg-white dark:bg-zinc-800 border-gray-300 dark:border-zinc-700 text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
 						/>
 					</div>
 
+					{/* Password */}
 					<div className="space-y-2">
-						<Label htmlFor="password">Password</Label>
+						<Label
+							htmlFor="password"
+							className="text-gray-700 dark:text-gray-300"
+						>
+							Password
+						</Label>
 						<Input
 							id="password"
 							type="password"
@@ -109,15 +122,18 @@ export default function LoginModal({ trigger }: LoginModalProps) {
 							onChange={(e) => setPassword(e.target.value)}
 							required
 							disabled={loading}
+							className="bg-white dark:bg-zinc-800 border-gray-300 dark:border-zinc-700 text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500"
 						/>
 					</div>
 
+					{/* Footer Buttons */}
 					<DialogFooter className="pt-2 gap-2">
 						<DialogClose asChild>
 							<Button
 								type="button"
 								variant="secondary"
 								disabled={loading}
+								className="bg-gray-100 dark:bg-zinc-700 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-zinc-600"
 							>
 								Cancel
 							</Button>
@@ -128,13 +144,13 @@ export default function LoginModal({ trigger }: LoginModalProps) {
 					</DialogFooter>
 				</form>
 
-				<div className="text-center text-sm text-muted-foreground mt-4">
+				<div className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4">
 					No account?{" "}
 					<Link
 						href="/signup"
-						className="text-primary hover:underline font-medium"
+						className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
 					>
-						Sign Up Now
+						Sign Up
 					</Link>
 				</div>
 			</DialogContent>

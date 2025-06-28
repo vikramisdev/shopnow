@@ -1,5 +1,11 @@
 "use client";
 
+import {
+	useGetCartQuery,
+	useGetOrdersQuery,
+	useGetFavoritesQuery,
+} from "@/store/services/userApi"; // ✅ Import hooks
+
 import { Popover, PopoverContent } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -27,9 +33,14 @@ export default function DashboardPopover({ trigger }: DashboardPopoverProps) {
 	const router = useRouter();
 	const user = useSelector((state: RootState) => state.auth.user);
 
-	const cartCount = 4;
-	const ordersCount = 2;
-	const favoritesCount = 6;
+	// ✅ Fetch data using RTK Query
+	const { data: cartData } = useGetCartQuery(undefined);
+	const { data: ordersData } = useGetOrdersQuery(undefined);
+	const { data: favoritesData } = useGetFavoritesQuery(undefined);
+
+	const cartCount = cartData?.length || 0;
+	const ordersCount = ordersData?.length || 0;
+	const favoritesCount = favoritesData?.length || 0;
 
 	const handleLogout = async () => {
 		try {

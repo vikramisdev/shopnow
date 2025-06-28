@@ -130,15 +130,6 @@ const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 
 						{/* Desktop User Menu */}
 						<div className="hidden md:flex items-center gap-2">
-							{session?.user?.image && (
-								<Image
-									src={session.user.image}
-									alt="User Avatar"
-									width={32}
-									height={32}
-									className="rounded-full object-cover"
-								/>
-							)}
 							{session ? (
 								<DashboardPopover
 									trigger={
@@ -148,7 +139,17 @@ const Header: React.FC<HeaderProps> = ({ expandSearchBar = false }) => {
 												size="md"
 												aria-label="Dashboard"
 											>
-												<UserIcon className="text-black dark:text-white" />
+												{session.user?.image ? (
+													<Image
+														src={session.user.image}
+														alt="User"
+														width={32}
+														height={32}
+														className="rounded-full size-5"
+													/>
+												) : (
+													<UserIcon className="text-black dark:text-white w-5 h-5" />
+												)}
 											</Button>
 										</PopoverTrigger>
 									}

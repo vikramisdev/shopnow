@@ -10,7 +10,8 @@ const nextConfig = {
       'image.freepik.com',
       'images.pexels.com',
       'images.unsplash.com',
-      'cdn.pixabay.com'
+      'cdn.pixabay.com',
+      'res.cloudinary.com'
     ]
   },
 };

@@ -143,9 +143,8 @@ export default function OrdersTab() {
 									Quantity: {product.quantity}
 								</p>
 								<p className="text-sm font-medium dark:text-white">
-									₹
-									{(product.price * product.quantity).toFixed(
-										2
+									{USDToINR(
+										Number(order.totalAmount.toFixed(0))
 									)}
 								</p>
 							</div>
@@ -160,12 +159,6 @@ export default function OrdersTab() {
 							</p>
 							<p className="text-muted-foreground">
 								{order.address}
-							</p>
-						</div>
-						<div className="text-right">
-							<p className="font-medium dark:text-white">
-								Total: ₹
-								{USDToINR(Number(order.totalAmount.toFixed(0)))}
 							</p>
 						</div>
 					</div>
