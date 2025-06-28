@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import axiosInstance from "@/lib/axios";
 
 export default function SignUpPage() {
 	const [name, setName] = useState("");
@@ -60,22 +61,15 @@ export default function SignUpPage() {
 		if (photoFile) formData.append("photo", photoFile); // original image
 
 		try {
-			const res = await fetch("/api/signup", {
-				method: "POST",
-				body: formData, // ⬅️ no headers needed! fetch automatically sets correct Content-Type
-			});
+			const res = await axiosInstance.post("/api/signup", formData);
 
-			const result = await res.text();
-
-			if (res.ok) {
-				toast.success(result || "Signup successful!");
-				router.push("/login");
-			} else {
-				toast.error(result || "Signup failed!");
-			}
+			const message = res.data?.message || "Signup successful!";
+			toast.success(message);
+			router.push("/login");
 		} catch (err) {
-			toast.error("Signup failed. Try again.");
 			console.error(err);
+			const fallback = "Signup failed. Try again.";
+			toast.error(fallback);
 		} finally {
 			setLoading(false);
 		}

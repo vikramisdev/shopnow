@@ -3,6 +3,7 @@
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import ProductPreview from "@/app/components/ProductPreview";
+import axiosInstance from "@/lib/axios";
 
 interface ProductData {
 	id: number;
@@ -18,9 +19,8 @@ interface ProductData {
 
 async function getProduct(id: string): Promise<ProductData | null> {
 	try {
-		const res = await fetch(`https://dummyjson.com/products/${id}`);
-		if (!res.ok) throw new Error("Product not found");
-		return res.json();
+		const res = await axiosInstance.get(`/products/${id}`);
+		return res.data;
 	} catch (err) {
 		console.error("Error fetching product:", err);
 		return null;

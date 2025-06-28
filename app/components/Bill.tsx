@@ -9,6 +9,7 @@ import PaymentMethods from "./other";
 import CreditCard from "./CreditCard";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 interface ProductData {
 	id?: number;
@@ -71,42 +72,31 @@ function Bill({ title, images, description, price, id }: ProductData) {
 		setIsPlacing(true);
 
 		try {
-			const res = await fetch("/api/order", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					userId: user.id,
-					products: [
-						{
-							productId: id,
-							title,
-							price,
-							quantity,
-							image: images[0],
-						},
-					],
-					totalAmount: total,
-					address:
-						"Santaji Chowk, Abhona 423502, Tal. Kalwan, Dist. Nashik, Maharashtra",
-					paymentMethod: PaymentMethods[selectedMethod],
-					deliveryEstimate: {
-						start: arrivalStart,
-						end: arrivalEnd,
+			await axios.post("/api/order", {
+				userId: user.id,
+				products: [
+					{
+						productId: id,
+						title,
+						price,
+						quantity,
+						image: images[0],
 					},
-				}),
+				],
+				totalAmount: total,
+				address:
+					"Santaji Chowk, Abhona 423502, Tal. Kalwan, Dist. Nashik, Maharashtra",
+				paymentMethod: PaymentMethods[selectedMethod],
+				deliveryEstimate: {
+					start: arrivalStart,
+					end: arrivalEnd,
+				},
 			});
 
-			if (res.ok) {
-				alert("✅ Order placed successfully!");
-				router.push("/orders");
-			} else {
-				alert("❌ Failed to place order.");
-			}
+			alert("✅ Order placed successfully!");
+			router.push("/orders");
 		} catch (error) {
 			console.error("Order error:", error);
-			alert("❌ Something went wrong.");
 		} finally {
 			setIsPlacing(false);
 		}

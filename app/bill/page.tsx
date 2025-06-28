@@ -14,6 +14,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import BillPageSkeleton from "../components/skeletons/BillPageSkeleton";
 import { useSession } from "next-auth/react";
+import axiosInstance from "@/lib/axios";
 
 interface Product {
 	id: number;
@@ -41,12 +42,11 @@ function Bill() {
 		if (!id) return;
 
 		setLoading(true);
-		fetch(`https://dummyjson.com/products/${id}`)
+
+		axiosInstance
+			.get(`/products/${id}`)
 			.then((res) => {
-				if (!res.ok) throw new Error("Failed to load product");
-				return res.json();
-			})
-			.then((data) => {
+				const data = res.data;
 				setProduct({
 					id: data.id,
 					title: data.title,

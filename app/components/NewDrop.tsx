@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Product from "./Product";
 import { useRouter } from "next/navigation";
 import NewCollectionSkeleton from "./skeletons/NewCollectionSkeleton";
+import axiosInstance from "@/lib/axios";
 
 interface ProductData {
 	id: number;
@@ -21,11 +22,10 @@ const NewCollection: React.FC = () => {
 	useEffect(() => {
 		const fetchProducts = async () => {
 			try {
-				const res = await fetch(
-					"https://dummyjson.com/products/category/mens-shoes"
+				const res = await axiosInstance.get(
+					"/products/category/mens-shoes"
 				);
-				const data = await res.json();
-				setProducts(data.products);
+				setProducts(res.data.products);
 			} catch (error) {
 				console.error("Failed to fetch products:", error);
 				setProducts([]); // empty fallback
@@ -37,7 +37,7 @@ const NewCollection: React.FC = () => {
 
 	if (products === null) return <NewCollectionSkeleton />;
 
-	if (products.length === 0)
+	if (products && products.length === 0)
 		return (
 			<div className="px-10 py-24 text-center text-gray-500">
 				<h2 className="text-xl">No new products found.</h2>
@@ -46,7 +46,9 @@ const NewCollection: React.FC = () => {
 
 	return (
 		<section className="px-4 sm:px-8 md:px-10 py-24 bg-white dark:bg-black">
-			<h1 className="font-semibold text-3xl py-5 px-2">New Collection</h1>
+			<h1 className="font-semibold text-3xl py-5 px-2 text-black dark:text-white">
+				New Drop
+			</h1>
 			<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
 				{products.map((product) => (
 					<Product

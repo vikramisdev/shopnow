@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Search } from "lucide-react";
 import Image from "next/image";
+import axiosInstance from "@/lib/axios";
 
 interface SearchModalProps {
 	trigger: React.ReactNode;
@@ -45,14 +46,10 @@ export default function SearchModal({ trigger }: SearchModalProps) {
 	const searchProducts = async () => {
 		setLoading(true);
 		try {
-			const res = await fetch(
-				`https://dummyjson.com/products/search?q=${encodeURIComponent(
-					query
-				)}`
+			const res = await axiosInstance.get(
+				`/products/search?q=${encodeURIComponent(query)}`
 			);
-			if (!res.ok) throw new Error("Search failed");
-			const data = await res.json();
-			setResults(data.products || []);
+			setResults(res.data.products || []);
 		} catch (error) {
 			console.error(error);
 			toast.error("Search failed. Try again.");

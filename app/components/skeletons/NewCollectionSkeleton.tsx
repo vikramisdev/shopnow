@@ -24,10 +24,10 @@ const SkeletonCard = () => {
 
 const NewCollectionSkeleton = () => {
 	return (
-		<div className="px-10 py-24">
+		<div className="px-10 py-24 bg-white dark:bg-black">
 			<h1 className="font-semibold text-3xl py-5 px-2">New Collection</h1>
 			<div className="flex justify-between flex-wrap gap-y-12 gap-x-6">
-				{Array.from({ length: 6 }).map((_, i) => (
+				{Array.from({ length: 5 }).map((_, i) => (
 					<SkeletonCard key={i} />
 				))}
 			</div>

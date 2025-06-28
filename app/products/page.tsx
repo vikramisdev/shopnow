@@ -8,6 +8,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ProductPreview from "../components/ProductPreview";
 import ProductPreviewSkeleton from "../components/skeletons/ProductPreviewSkeleton";
+import axiosInstance from "@/lib/axios";
 
 interface ProductData {
 	id: number;
@@ -37,10 +38,9 @@ function Products() {
 			setError(false);
 
 			try {
-				const res = await fetch(`https://dummyjson.com/products/${id}`);
-				if (!res.ok) throw new Error("Network response failed");
+				const res = await axiosInstance.get(`/products/${id}`);
+				const data = res.data;
 
-				const data = await res.json();
 				if (!data?.id) throw new Error("Product data invalid");
 
 				setProduct(data);

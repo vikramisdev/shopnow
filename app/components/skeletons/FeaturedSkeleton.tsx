@@ -27,7 +27,7 @@ const SkeletonCard = () => {
 
 const FeaturedSkeleton = () => {
 	return (
-		<div className="px-10 py-24">
+		<div className="px-10 py-24 bg-white dark:bg-black">
 			<h1 className="font-semibold text-3xl py-5 px-2">Featured</h1>
 			<div className="flex justify-between flex-wrap gap-y-12 gap-x-6">
 				{Array.from({ length: 4 }).map((_, i) => (

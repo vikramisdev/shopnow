@@ -4,9 +4,10 @@ import Header from "./components/Header";
 import HeroSection from "./components/HeroSection";
 import BrandsMarquee from "./components/BrandsMarquee";
 import Featured from "./components/Featured";
-import NewCollection from "./components/NewCollection";
+import NewCollection from "./components/NewDrop";
 import Footer from "./components/Footer";
 import SeasonSale from "./components/SeasonSale";
+import ImageCarousal from "./components/ImageCarousal";
 
 export default function Home() {
 	return (
@@ -15,6 +16,7 @@ export default function Home() {
 			<HeroSection />
 			<BrandsMarquee />
 			<SeasonSale />
+			<ImageCarousal />
 			<Featured />
 			<NewCollection />
 			<Footer />

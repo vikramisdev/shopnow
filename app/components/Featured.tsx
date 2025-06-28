@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import Product from "./Product";
 import { useRouter } from "next/navigation";
 import FeaturedSkeleton from "./skeletons/FeaturedSkeleton";
+import axiosInstance from "@/lib/axios";
+import { PartyPopper } from "lucide-react";
 
 // --- Product type from DummyJSON
 interface ProductData {
@@ -28,12 +30,10 @@ export default function Featured() {
 	useEffect(() => {
 		const fetchFeatured = async () => {
 			try {
-				const res = await fetch(
-					"https://dummyjson.com/products/category/mens-shirts?limit=4"
+				const res = await axiosInstance.get(
+					"/products/category/mens-shirts?limit=4"
 				);
-				if (!res.ok)
-					throw new Error("Failed to fetch featured products");
-				const data: APIResponse = await res.json();
+				const data: APIResponse = res.data;
 				setProducts(data.products || []);
 			} catch (err) {
 				console.error(err);
@@ -64,7 +64,10 @@ export default function Featured() {
 
 	return (
 		<div className="px-4 sm:px-6 lg:px-10 py-24 bg-white dark:bg-black">
-			<h1 className="font-semibold text-3xl py-5 px-2">Featured</h1>
+			<h1 className="font-semibold text-3xl py-5 px-2 text-black dark:text-white flex items-center gap-x-3">
+				<PartyPopper />
+				Featured
+			</h1>
 			<div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 				{products.map((product) => (
 					<Product
