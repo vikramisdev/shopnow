@@ -9,7 +9,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import axiosInstance from "@/lib/axios";
+import axios from "axios";
 
 export default function SignUpPage() {
 	const [name, setName] = useState("");
@@ -61,7 +61,7 @@ export default function SignUpPage() {
 		if (photoFile) formData.append("photo", photoFile); // original image
 
 		try {
-			const res = await axiosInstance.post("/api/signup", formData);
+			const res = await axios.post("/api/signup", formData);
 
 			const message = res.data?.message || "Signup successful!";
 			toast.success(message);
